@@ -21,7 +21,7 @@ from fruitshack import settings
 
 
 urlpatterns = [
-    path("", include("home.urls")),
+    path("/", include("home.urls")),
     path("product/", include("product.urls")),
     path("admin/", admin.site.urls),
     path("accounts/", include("accounts.urls")),
