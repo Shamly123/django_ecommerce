@@ -5,18 +5,32 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('product', '0002_alter_product_description'),
+        ("product", "0002_alter_product_description"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Points',
+            name="Points",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('points', models.CharField(max_length=50)),
-                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='product_ponits', to='product.product')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("points", models.CharField(max_length=50)),
+                (
+                    "product",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="product_ponits",
+                        to="product.product",
+                    ),
+                ),
             ],
         ),
     ]

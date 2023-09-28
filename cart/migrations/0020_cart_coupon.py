@@ -5,15 +5,19 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('cart', '0019_coupon'),
+        ("cart", "0019_coupon"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='cart',
-            name='coupon',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='cart.coupon'),
+            model_name="cart",
+            name="coupon",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="cart.coupon",
+            ),
         ),
     ]

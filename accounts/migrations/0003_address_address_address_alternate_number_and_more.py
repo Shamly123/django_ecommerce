@@ -6,27 +6,31 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('accounts', '0002_address'),
+        ("accounts", "0002_address"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='address',
-            name='address',
-            field=models.ForeignKey(default=0, on_delete=django.db.models.deletion.CASCADE, related_name='user_address', to=settings.AUTH_USER_MODEL),
+            model_name="address",
+            name="address",
+            field=models.ForeignKey(
+                default=0,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="user_address",
+                to=settings.AUTH_USER_MODEL,
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='address',
-            name='alternate_number',
+            model_name="address",
+            name="alternate_number",
             field=models.IntegerField(default=0),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='address',
-            name='phone_number',
+            model_name="address",
+            name="phone_number",
             field=models.IntegerField(default=0),
             preserve_default=False,
         ),

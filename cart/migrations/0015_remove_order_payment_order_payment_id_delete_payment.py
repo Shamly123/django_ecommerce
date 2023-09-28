@@ -4,22 +4,21 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('cart', '0014_alter_order_address'),
+        ("cart", "0014_alter_order_address"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='order',
-            name='payment',
+            model_name="order",
+            name="payment",
         ),
         migrations.AddField(
-            model_name='order',
-            name='payment_id',
+            model_name="order",
+            name="payment_id",
             field=models.CharField(blank=True, max_length=50, null=True),
         ),
         migrations.DeleteModel(
-            name='Payment',
+            name="Payment",
         ),
     ]

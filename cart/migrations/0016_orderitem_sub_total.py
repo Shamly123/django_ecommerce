@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('cart', '0015_remove_order_payment_order_payment_id_delete_payment'),
+        ("cart", "0015_remove_order_payment_order_payment_id_delete_payment"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='orderitem',
-            name='sub_total',
+            model_name="orderitem",
+            name="sub_total",
             field=models.IntegerField(default=100),
             preserve_default=False,
         ),

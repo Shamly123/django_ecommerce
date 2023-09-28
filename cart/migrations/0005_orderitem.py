@@ -5,20 +5,38 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('product', '0004_delete_points'),
-        ('cart', '0004_alter_order_status'),
+        ("product", "0004_delete_points"),
+        ("cart", "0004_alter_order_status"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='OrderItem',
+            name="OrderItem",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('quantity', models.PositiveIntegerField()),
-                ('order', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='cart.order')),
-                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='product.product')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("quantity", models.PositiveIntegerField()),
+                (
+                    "order",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="cart.order"
+                    ),
+                ),
+                (
+                    "product",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="product.product",
+                    ),
+                ),
             ],
         ),
     ]

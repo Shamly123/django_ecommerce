@@ -5,16 +5,20 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('accounts', '0005_alter_profile_profile_image'),
-        ('cart', '0013_remove_payment_created_at_remove_payment_order_and_more'),
+        ("accounts", "0005_alter_profile_profile_image"),
+        ("cart", "0013_remove_payment_created_at_remove_payment_order_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='order',
-            name='address',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='accounts.address'),
+            model_name="order",
+            name="address",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="accounts.address",
+            ),
         ),
     ]

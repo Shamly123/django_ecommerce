@@ -1,18 +1,18 @@
 from django.contrib.auth import authenticate, login, logout
 from django.core.paginator import Paginator
-from django.http import HttpResponse,JsonResponse
-from product.models import Category,Product,Product_Image,Offer
-from django.shortcuts import render, redirect,get_object_or_404
+from django.http import HttpResponse, JsonResponse
+from product.models import Category, Product, Product_Image, Offer
+from django.shortcuts import render, redirect, get_object_or_404
 from accounts.models import Profile
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
 from django.core.exceptions import ObjectDoesNotExist
-from cart.models import Order,Coupon
+from cart.models import Order, Coupon
 from .forms import ImageForm
 from django.db.models import Q
 from django.utils import timezone
 from django.db.models import Sum
-from datetime import datetime,timedelta
+from datetime import datetime, timedelta
 import json
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
 from reportlab.lib.styles import getSampleStyleSheet
@@ -23,13 +23,11 @@ from reportlab.lib.pagesizes import A4
 
 
 # Create your views here.
-#admin dashboard
+# admin dashboard
 def index(request):
-
     if not request.user.is_superuser:
-
-        return redirect('admin_login')
-    #sales report
+        return redirect("admin_login")
+    # sales report
     selected_value = request.GET.get("selected_value")
     current_date = timezone.now()
     current_month = current_date.month
@@ -41,11 +39,14 @@ def index(request):
         created_at__year=current_year, status="Delivered"
     ).aggregate(total=Sum("order_total"))["total"]
 
-    revenue_month = Order.objects.filter(
-        created_at__year=current_year,
-        created_at__month=current_month,
-        status="Delivered",
-    ).aggregate(total_price_sum=Sum("order_total"))["total_price_sum"] or 0
+    revenue_month = (
+        Order.objects.filter(
+            created_at__year=current_year,
+            created_at__month=current_month,
+            status="Delivered",
+        ).aggregate(total_price_sum=Sum("order_total"))["total_price_sum"]
+        or 0
+    )
 
     revenue_week = Order.objects.filter(
         created_at__year=current_year,
@@ -105,7 +106,7 @@ def index(request):
             )
 
             total_price_float_curr = float(total_price_curr)
-            monthly_total_prices.append(total_price_float_curr /10)
+            monthly_total_prices.append(total_price_float_curr / 10)
 
             total_price_float_pre = float(total_price_pre)
             previous.append(total_price_float_pre / 10)
@@ -176,10 +177,10 @@ def index(request):
         "current_month": month,
     }
 
+    return render(request, "index_3.html", context)
 
-    return render(request,'index_3.html',context)
 
-#sales_get_report
+# sales_get_report
 def sales_report(request):
     if request.method == "POST":
         start_date = request.POST["start_date"]
@@ -203,11 +204,12 @@ def sales_report(request):
 
             except ValueError as e:
                 # Handle invalid date input, e.g., display an error message to the user
-                return HttpResponse("Invalid date input. Please use the format YYYY-MM-DD.")
+                return HttpResponse(
+                    "Invalid date input. Please use the format YYYY-MM-DD."
+                )
         else:
             # Handle cases where start_date or end_date is not provided
             return HttpResponse("Both start_date and end_date are required.")
-        
 
         if format == "pdf":
             response = HttpResponse(content_type="application/pdf")
@@ -250,7 +252,7 @@ def sales_report(request):
                         user_email,
                         order.address.city,
                         order.method,
-                        #order.payment.payment_method,
+                        # order.payment.payment_method,
                         order.order_total,
                         created_date,
                     ]
@@ -258,7 +260,7 @@ def sales_report(request):
                 counter += 1
                 total += order.order_total
             data.append([])
-            data.append(["","Total Amount","","",total])
+            data.append(["", "Total Amount", "", "", total])
             table = Table(data)
             table.setStyle(table_style)
 
@@ -304,7 +306,7 @@ def sales_report(request):
                 ]
                 ws.append(row_data)
                 counter += 1
-                
+
             output = io.BytesIO()
             wb.save(output)
             output.seek(0)
@@ -322,28 +324,29 @@ def sales_report(request):
 def admin_login(request):
     if request.user.is_authenticated:
         if request.user.is_superuser:
-            return redirect('indexes')
-        return redirect('admin_login')
+            return redirect("indexes")
+        return redirect("admin_login")
 
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
+    if request.method == "POST":
+        username = request.POST["username"]
+        password = request.POST["password"]
         user = authenticate(username=username, password=password)
 
         if user is not None:
             if user.is_superuser:
                 login(request, user)
-                return redirect('indexes')
-        error = 'invalid User'
+                return redirect("indexes")
+        error = "invalid User"
 
-        return render(request, 'authentication-login.html', {'error_messege': error})
+        return render(request, "authentication-login.html", {"error_messege": error})
 
-    return render(request, 'authentication-login.html')
+    return render(request, "authentication-login.html")
 
 
 def admin_logout(request):
     logout(request)
-    return redirect('admin_login')  
+    return redirect("admin_login")
+
 
 def not_superuser(user):
     return not user.is_superuser
@@ -351,21 +354,20 @@ def not_superuser(user):
 
 def user_view(request):
     if not request.user.is_authenticated or not request.user.is_superuser:
-        return redirect('admin_login')
+        return redirect("admin_login")
     users = Profile.objects.filter(is_superuser=False)
     paginator = Paginator(users, 4)
     page_number = request.GET.get("page")
     user_obj = paginator.get_page(page_number)
-    return render(request,'user-management.html',{'users':user_obj})
-
+    return render(request, "user-management.html", {"users": user_obj})
 
 
 # user search
 def user_search(request):
     if not request.user.is_authenticated or not request.user.is_superuser:
-        return redirect('admin_login')
-    
-    query = request.GET.get('q')
+        return redirect("admin_login")
+
+    query = request.GET.get("q")
 
     if query:
         users = Profile.objects.filter(
@@ -374,173 +376,176 @@ def user_search(request):
     else:
         users = []
 
-    return render(request, 'admin_user_search.html', {'users': users})
+    return render(request, "admin_user_search.html", {"users": users})
 
 
-
-def user_status(request,user_id):
+def user_status(request, user_id):
     if not request.user.is_authenticated or not request.user.is_superuser:
-        return redirect('admin_login')
-    
+        return redirect("admin_login")
+
     user = Profile.objects.get(id=user_id)
     if user.is_active:
         user.is_active = False
     else:
-        user.is_active=True
-        
+        user.is_active = True
+
     user.save()
-    return redirect('user_view')
+    return redirect("user_view")
+
 
 def category(request):
     if not request.user.is_authenticated or not request.user.is_superuser:
-        return redirect('admin_login')
+        return redirect("admin_login")
     categories = Category.objects.all()
     offers = Offer.objects.all()
-    return render(request,'category-management.html',{'categories':categories,'offers':offers})
+    return render(
+        request,
+        "category-management.html",
+        {"categories": categories, "offers": offers},
+    )
+
 
 def add_category(request):
     if not request.user.is_authenticated or not request.user.is_superuser:
-        return redirect('admin_login')
-    
-    if request.method == 'POST':
-        
-        category_name = request.POST.get('category_name')
+        return redirect("admin_login")
+
+    if request.method == "POST":
+        category_name = request.POST.get("category_name")
         category_obj = Category.objects.create(category_name=category_name)
         category_obj.save()
-    
-    return redirect('category_management')   
 
-def edit_category(request,cat_id):
-    
+    return redirect("category_management")
+
+
+def edit_category(request, cat_id):
     if not request.user.is_authenticated or not request.user.is_superuser:
-        return redirect('admin_login')
-  
-    if request.method == 'POST':
-    
-        new_category_name = request.POST.get('category_name')
+        return redirect("admin_login")
+
+    if request.method == "POST":
+        new_category_name = request.POST.get("category_name")
         category = Category.objects.get(uid=cat_id)
-        category.category_name=new_category_name
+        category.category_name = new_category_name
         category.save()
-    return redirect('category_management')
+    return redirect("category_management")
 
-    
-def delete_category(request,cat_id):
-    
+
+def delete_category(request, cat_id):
     if not request.user.is_authenticated or not request.user.is_superuser:
-        return redirect('admin_login')
-    
-    
+        return redirect("admin_login")
+
     category = Category.objects.get(uid=cat_id)
     category.delete()
-    return redirect('category_management')
-    
+    return redirect("category_management")
 
 
 def product(request):
     if not request.user.is_authenticated or not request.user.is_superuser:
-        return redirect('admin_login')
+        return redirect("admin_login")
     products = Product.objects.all()
     category = Category.objects.all()
     offers = Offer.objects.all()
-    
-    category_filter = request.GET.get('category')
+
+    category_filter = request.GET.get("category")
     if category_filter:
-        products = products.filter(category__uid = category_filter)
-        
-    sort_option = request.GET.get('sort')
-    if sort_option == 'name_asc':
-        products = products.order_by('product_name')
-    elif sort_option == 'name_desc':
-        products = products.order_by('-product_name')  # Use '-' to indicate descending order
-    elif sort_option == 'price_asc':
-        products = products.order_by('price')
-    elif sort_option == 'price_desc':
-        products = products.order_by('-price')
-        
-    
-    context = {'products':products,
-               'categories':category,
-               'offers':offers
-               }
-    return render(request,'product-management.html',context)
- 
-#search products   
+        products = products.filter(category__uid=category_filter)
+
+    sort_option = request.GET.get("sort")
+    if sort_option == "name_asc":
+        products = products.order_by("product_name")
+    elif sort_option == "name_desc":
+        products = products.order_by(
+            "-product_name"
+        )  # Use '-' to indicate descending order
+    elif sort_option == "price_asc":
+        products = products.order_by("price")
+    elif sort_option == "price_desc":
+        products = products.order_by("-price")
+
+    context = {"products": products, "categories": category, "offers": offers}
+    return render(request, "product-management.html", context)
+
+
+# search products
 def product_search(request):
     if not request.user.is_authenticated or not request.user.is_superuser:
-        return redirect('admin_login')
-    query = request.GET.get('q')
+        return redirect("admin_login")
+    query = request.GET.get("q")
 
     if query:
         products = Product.objects.filter(product_name__icontains=query)
     else:
         products = []
 
-    return render(request, 'admin_product_search_result.html', {'products': products})
-    
-def edit_product(request,pro_id):
+    return render(request, "admin_product_search_result.html", {"products": products})
+
+
+def edit_product(request, pro_id):
     if not request.user.is_authenticated or not request.user.is_superuser:
-        return redirect('admin_login')
-    
-    if request.method == 'POST':
-        product_name = request.POST.get('product_name')
-        category_id = request.POST.get('category')
-        offer_id = request.POST.get('offer')
-        description = request.POST.get('description')
-        price = request.POST.get('price')
-        stock = request.POST.get('stock')
-        
+        return redirect("admin_login")
+
+    if request.method == "POST":
+        product_name = request.POST.get("product_name")
+        category_id = request.POST.get("category")
+        offer_id = request.POST.get("offer")
+        description = request.POST.get("description")
+        price = request.POST.get("price")
+        stock = request.POST.get("stock")
+
         products = Product.objects.get(id=pro_id)
         category = Category.objects.get(uid=category_id)
         offer = Offer.objects.get(uid=offer_id)
-        
+
         products.product_name = product_name
         products.category = category
         products.offer = offer
         products.description = description
-        products.price=price
-        products.stock=stock
-        
+        products.price = price
+        products.stock = stock
+
         category.save()
         offer.save()
         products.save()
-    return redirect('product_management')
+    return redirect("product_management")
 
 
-def delete_product(request,pro_id):
-    
+def delete_product(request, pro_id):
     if not request.user.is_authenticated or not request.user.is_superuser:
-        return redirect('admin_login')
-    
-    
+        return redirect("admin_login")
+
     products = Product.objects.get(id=pro_id)
-    
+
     products.delete()
-    
-    return redirect('product_management')
+
+    return redirect("product_management")
 
 
 def add_product(request):
     if not request.user.is_authenticated or not request.user.is_superuser:
-        return redirect('admin_login')
-    
-    if request.method == 'POST':
-        
-        product_name = request.POST.get('product_name')
-        category_id = request.POST.get('category')
-        offer_id = request.POST.get('offer')
-        description = request.POST.get('description')
-        price = request.POST.get('price')
-        stock = request.POST.get('stock')
+        return redirect("admin_login")
+
+    if request.method == "POST":
+        product_name = request.POST.get("product_name")
+        category_id = request.POST.get("category")
+        offer_id = request.POST.get("offer")
+        description = request.POST.get("description")
+        price = request.POST.get("price")
+        stock = request.POST.get("stock")
         category = Category.objects.get(uid=category_id)
-        offer = Offer.objects.get(uid = offer_id)
+        offer = Offer.objects.get(uid=offer_id)
         category.save()
         offer.save()
-        product_obj = Product.objects.create(product_name=product_name,category=category,offer=offer,description=description,price=price,stock=stock)
-        
+        product_obj = Product.objects.create(
+            product_name=product_name,
+            category=category,
+            offer=offer,
+            description=description,
+            price=price,
+            stock=stock,
+        )
+
         product_obj.save()
-        
-    
-    return redirect('product_management')
+
+    return redirect("product_management")
 
 
 # def product_image(request,pro_id):
@@ -550,27 +555,27 @@ def add_product(request):
 #     product_images=products.product_images.all()
 
 #     return render(request, 'product-image.html',{'pro':product_images})
-        
-
-
-
 
 
 def product_image(request, pro_id):
     if not request.user.is_authenticated or not request.user.is_superuser:
-        return redirect('admin_login')
-    
+        return redirect("admin_login")
+
     product = Product.objects.get(id=pro_id)
     product_images = product.product_images.all()
 
-    if request.method == 'POST':
-        image = request.FILES.get('image')  # Assuming you're uploading the image via a form
+    if request.method == "POST":
+        image = request.FILES.get(
+            "image"
+        )  # Assuming you're uploading the image via a form
 
         if image:
             product_image = Product_Image.objects.create(product=product, image=image)
             product_image.save()
 
-    return render(request, 'product-image.html', {'pro': product_images, 'product': product})
+    return render(
+        request, "product-image.html", {"pro": product_images, "product": product}
+    )
 
 
 def addimage(request, uid):
@@ -597,7 +602,7 @@ def addimage(request, uid):
 
 def delete_image(request, pro_id):
     if not request.user.is_authenticated or not request.user.is_superuser:
-        return redirect('admin_login')
+        return redirect("admin_login")
 
     try:
         product_image = Product_Image.objects.get(id=pro_id)
@@ -606,136 +611,131 @@ def delete_image(request, pro_id):
     except ObjectDoesNotExist:
         pass
 
-    return redirect('product_image', pro_id=product_id)  # Use pro_id here
-
+    return redirect("product_image", pro_id=product_id)  # Use pro_id here
 
 
 def Orders(request):
     if not request.user.is_authenticated or not request.user.is_superuser:
-        return redirect('admin_login')
+        return redirect("admin_login")
     orders = Order.objects.all()
-    return render(request,'order-management.html',{'orders':orders})
-    
-def edit_order_status(request,od_id):
+    return render(request, "order-management.html", {"orders": orders})
+
+
+def edit_order_status(request, od_id):
     if not request.user.is_authenticated or not request.user.is_superuser:
-        return redirect('admin_login')
-    
-    if request.method == 'POST':
-    
-        new_status = request.POST.get('order_status')
+        return redirect("admin_login")
+
+    if request.method == "POST":
+        new_status = request.POST.get("order_status")
         orders = Order.objects.get(uid=od_id)
-        orders.status=new_status
+        orders.status = new_status
         orders.save()
-    return redirect('order_management')
+    return redirect("order_management")
 
 
-#order details
+# order details
 def order_details(request, order_uid):
     if not request.user.is_authenticated or not request.user.is_superuser:
-        return redirect('admin_login')
-    
+        return redirect("admin_login")
+
     order = get_object_or_404(Order, uid=order_uid)
 
     # Retrieve related order items and address
     order_items = order.order_item.all()
-    
-    return render(request, 'admin_order_details.html', {'order': order, 'order_items': order_items})
+
+    return render(
+        request,
+        "admin_order_details.html",
+        {"order": order, "order_items": order_items},
+    )
 
 
 def coupon(request):
     if not request.user.is_authenticated or not request.user.is_superuser:
-        return redirect('admin_login')
-    
+        return redirect("admin_login")
+
     coupons = Coupon.objects.all()
-    return render(request,'coupon.html',{'coupons':coupons})
+    return render(request, "coupon.html", {"coupons": coupons})
 
 
 def add_coupon(request):
-    
     if not request.user.is_authenticated or not request.user.is_superuser:
-        return redirect('admin_login')
-    if request.method == 'POST':
-        
-        coupon_code = request.POST.get('coupon_code')
-        coupon_price = request.POST.get('coupon_price')
-        min_price = request.POST.get('min_price')
-        coupon_obj = Coupon.objects.create(coupon_code = coupon_code,couon_price=coupon_price,min_price = min_price)
+        return redirect("admin_login")
+    if request.method == "POST":
+        coupon_code = request.POST.get("coupon_code")
+        coupon_price = request.POST.get("coupon_price")
+        min_price = request.POST.get("min_price")
+        coupon_obj = Coupon.objects.create(
+            coupon_code=coupon_code, couon_price=coupon_price, min_price=min_price
+        )
         coupon_obj.save()
-    
-    return redirect('coupon_management') 
+
+    return redirect("coupon_management")
 
 
-def edit_coupon(request,c_id):
+def edit_coupon(request, c_id):
     if not request.user.is_authenticated or not request.user.is_superuser:
-        return redirect('admin_login')
-    if request.method == 'POST':
-    
-        coupon_code = request.POST.get('coupon_code')
-        coupon_price = request.POST.get('coupon_price')
-        min_price = request.POST.get('min_price')
-        
-        coupon= Coupon.objects.get(uid=c_id)
-        coupon.coupon_code=coupon_code
+        return redirect("admin_login")
+    if request.method == "POST":
+        coupon_code = request.POST.get("coupon_code")
+        coupon_price = request.POST.get("coupon_price")
+        min_price = request.POST.get("min_price")
+
+        coupon = Coupon.objects.get(uid=c_id)
+        coupon.coupon_code = coupon_code
         coupon.couon_price = coupon_price
         coupon.min_price = min_price
         coupon.save()
-    return redirect('coupon_management')
+    return redirect("coupon_management")
 
-def delete_coupon(request,c_id):
+
+def delete_coupon(request, c_id):
     if not request.user.is_authenticated or not request.user.is_superuser:
-        return redirect('admin_login')
-    
-    
+        return redirect("admin_login")
+
     coupon = Coupon.objects.get(uid=c_id)
     coupon.delete()
-    return redirect('coupon_management')
-    
+    return redirect("coupon_management")
+
 
 def offer(request):
     if not request.user.is_authenticated or not request.user.is_superuser:
-        return redirect('admin_login')
-    
-    offers = Offer.objects.all()
-    return render(request,'offer-management.html',{'offers':offers})    
-   
+        return redirect("admin_login")
 
+    offers = Offer.objects.all()
+    return render(request, "offer-management.html", {"offers": offers})
 
 
 def add_offer(request):
-    
     if not request.user.is_authenticated or not request.user.is_superuser:
-        return redirect('admin_login')
-    if request.method == 'POST':
-        
-        name = request.POST.get('offer')
-        percentage = request.POST.get('percentage')
-        offer_obj = Offer.objects.create(name = name,percentage=percentage)
+        return redirect("admin_login")
+    if request.method == "POST":
+        name = request.POST.get("offer")
+        percentage = request.POST.get("percentage")
+        offer_obj = Offer.objects.create(name=name, percentage=percentage)
         offer_obj.save()
-    
-    return redirect('offer_management') 
+
+    return redirect("offer_management")
 
 
-
-def edit_offer(request,o_id):
+def edit_offer(request, o_id):
     if not request.user.is_authenticated or not request.user.is_superuser:
-        return redirect('admin_login')
-    if request.method == 'POST':
-    
-        name = request.POST.get('offer')
-        percentage = request.POST.get('percentage')
-        
+        return redirect("admin_login")
+    if request.method == "POST":
+        name = request.POST.get("offer")
+        percentage = request.POST.get("percentage")
+
         offer = Offer.objects.get(uid=o_id)
-        offer.name=name
+        offer.name = name
         offer.percentage = percentage
         offer.save()
-    return redirect('offer_management')
+    return redirect("offer_management")
 
 
-def delete_offer(request,o_id):
+def delete_offer(request, o_id):
     if not request.user.is_authenticated or not request.user.is_superuser:
-        return redirect('admin_login')
-    
-    
+        return redirect("admin_login")
+
     offer = Offer.objects.get(uid=o_id)
     offer.delete()
-    return redirect('offer_management')
+    return redirect("offer_management")

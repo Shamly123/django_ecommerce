@@ -5,43 +5,51 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('cart', '0012_alter_order_method'),
+        ("cart", "0012_alter_order_method"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='payment',
-            name='created_at',
+            model_name="payment",
+            name="created_at",
         ),
         migrations.RemoveField(
-            model_name='payment',
-            name='order',
+            model_name="payment",
+            name="order",
         ),
         migrations.AddField(
-            model_name='order',
-            name='payment',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='cart.payment'),
+            model_name="order",
+            name="payment",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="cart.payment",
+            ),
         ),
         migrations.AlterField(
-            model_name='cartitem',
-            name='cart',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='cartItem', to='cart.cart'),
+            model_name="cartitem",
+            name="cart",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="cartItem",
+                to="cart.cart",
+            ),
         ),
         migrations.AlterField(
-            model_name='payment',
-            name='amount_paid',
+            model_name="payment",
+            name="amount_paid",
             field=models.CharField(max_length=10),
         ),
         migrations.AlterField(
-            model_name='payment',
-            name='payment_method',
+            model_name="payment",
+            name="payment_method",
             field=models.CharField(max_length=100),
         ),
         migrations.AlterField(
-            model_name='payment',
-            name='status',
+            model_name="payment",
+            name="status",
             field=models.CharField(max_length=50),
         ),
     ]

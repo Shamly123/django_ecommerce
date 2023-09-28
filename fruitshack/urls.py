@@ -15,27 +15,22 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path,include
+from django.urls import path, include
 from django.conf.urls.static import static
 from fruitshack import settings
 
 
-
-urlpatterns =[
-    path('', include('home.urls')),
-    path('product/',include('product.urls')),
-    path('admin/', admin.site.urls),
-    path('accounts/', include('accounts.urls')),
-    path('search/',include('search_app.urls')),
-    path('admin-panel/',include('admin_panel.urls')),
-    path('cart/',include('cart.urls')),
-
-
-
+urlpatterns = [
+    path("", include("home.urls")),
+    path("product/", include("product.urls")),
+    path("admin/", admin.site.urls),
+    path("accounts/", include("accounts.urls")),
+    path("search/", include("search_app.urls")),
+    path("admin-panel/", include("admin_panel.urls")),
+    path("cart/", include("cart.urls")),
 ]
 
 
 if settings.DEBUG:
-    urlpatterns += static(settings.STATIC_URL,
-                          document_root = settings.STATIC_ROOT)
-    urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

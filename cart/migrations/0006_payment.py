@@ -5,18 +5,30 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('cart', '0005_orderitem'),
+        ("cart", "0005_orderitem"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Payment',
+            name="Payment",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('status', models.CharField(max_length=100)),
-                ('order', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='cart.order')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("status", models.CharField(max_length=100)),
+                (
+                    "order",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE, to="cart.order"
+                    ),
+                ),
             ],
         ),
     ]

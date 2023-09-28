@@ -5,24 +5,31 @@ import uuid
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('cart', '0018_remove_orderitem_sub_total'),
+        ("cart", "0018_remove_orderitem_sub_total"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Coupon',
+            name="Coupon",
             fields=[
-                ('uid', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('coupon_code', models.CharField(max_length=50)),
-                ('couon_price', models.IntegerField()),
-                ('min_price', models.IntegerField()),
+                (
+                    "uid",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                ("coupon_code", models.CharField(max_length=50)),
+                ("couon_price", models.IntegerField()),
+                ("min_price", models.IntegerField()),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
     ]

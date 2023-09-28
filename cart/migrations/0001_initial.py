@@ -5,37 +5,63 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('product', '0004_delete_points'),
+        ("product", "0004_delete_points"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Cart',
+            name="Cart",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('cart_id', models.CharField(blank=True, max_length=100)),
-                ('date_added', models.DateField(auto_now_add=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("cart_id", models.CharField(blank=True, max_length=100)),
+                ("date_added", models.DateField(auto_now_add=True)),
             ],
             options={
-                'db_table': 'Cart',
-                'ordering': ['date_added'],
+                "db_table": "Cart",
+                "ordering": ["date_added"],
             },
         ),
         migrations.CreateModel(
-            name='CartItem',
+            name="CartItem",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('quantity', models.IntegerField()),
-                ('active', models.BooleanField()),
-                ('cart', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='cart.cart')),
-                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='product.product')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("quantity", models.IntegerField()),
+                ("active", models.BooleanField()),
+                (
+                    "cart",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="cart.cart"
+                    ),
+                ),
+                (
+                    "product",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="product.product",
+                    ),
+                ),
             ],
             options={
-                'db_table': 'CartItem',
+                "db_table": "CartItem",
             },
         ),
     ]

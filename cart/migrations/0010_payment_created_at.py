@@ -5,16 +5,17 @@ import django.utils.timezone
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('cart', '0009_alter_orderitem_order'),
+        ("cart", "0009_alter_orderitem_order"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='payment',
-            name='created_at',
-            field=models.DateTimeField(auto_now_add=True, default=django.utils.timezone.now),
+            model_name="payment",
+            name="created_at",
+            field=models.DateTimeField(
+                auto_now_add=True, default=django.utils.timezone.now
+            ),
             preserve_default=False,
         ),
     ]

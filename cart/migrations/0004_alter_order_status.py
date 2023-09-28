@@ -4,15 +4,24 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('cart', '0003_order'),
+        ("cart", "0003_order"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='order',
-            name='status',
-            field=models.CharField(choices=[('Pending', 'Pending'), ('Order placed', 'Order placed'), ('Shipped', 'Shipped'), ('Delivered', 'Delivered'), ('Cancelled', 'Cancelled')], default='Order Pending', max_length=15),
+            model_name="order",
+            name="status",
+            field=models.CharField(
+                choices=[
+                    ("Pending", "Pending"),
+                    ("Order placed", "Order placed"),
+                    ("Shipped", "Shipped"),
+                    ("Delivered", "Delivered"),
+                    ("Cancelled", "Cancelled"),
+                ],
+                default="Order Pending",
+                max_length=15,
+            ),
         ),
     ]
