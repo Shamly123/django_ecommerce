@@ -27,8 +27,8 @@ class Address(BaseModel):
     pincode = models.IntegerField()
     state = models.CharField(max_length=50)
     city = models.CharField(max_length=50)
-    phone_number = models.IntegerField()
-    alternate_number = models.IntegerField()
+    phone_number = models.BigIntegerField()
+    alternate_number = models.BigIntegerField()
     user = models.ForeignKey(
         Profile, on_delete=models.CASCADE, related_name="user_address"
     )

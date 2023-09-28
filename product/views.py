@@ -6,6 +6,7 @@ from product.models import Product, Category
 from django.http import JsonResponse
 import json
 from accounts.models import Wishlist
+from django.contrib.auth.decorators import login_required
 
 
 # Create your views here.
@@ -45,7 +46,7 @@ def shop(request):
 
     return render(request, "shop.html", context)
 
-
+@login_required
 def wishlist(request):
     products = Wishlist.objects.filter(user=request.user)
     return render(request, "wishlist.html", {"products": products})

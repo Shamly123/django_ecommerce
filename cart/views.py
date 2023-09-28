@@ -40,7 +40,11 @@ def cart_details(request, total=0, counter=0, cart_items=None):
 
     if request.method == "POST":
         coupon_code = request.POST.get("coupon_code")
-        coupon = Coupon.objects.get(coupon_code=coupon_code)
+        try:
+            coupon = Coupon.objects.get(coupon_code=coupon_code)
+        except:
+            messages.warning(request, "Invalid Coupon")
+            return HttpResponseRedirect(request.path_info)
         if coupon.min_price > total:
             messages.warning(
                 request, f"minimum price should be greater than {coupon.min_price}"
