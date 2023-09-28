@@ -1,0 +1,193 @@
+{% extends 'admin-base.html' %}
+{% block title %}User_management{% endblock %}
+{% load static %}
+{% block start %}
+
+<style>
+  .badge {
+    display: inline-block;
+    padding: 0.25em 0.5em;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    border-radius: 10rem;
+  }
+
+  .alert-success {
+    color: #0ab732;
+    background-color: #d4edda;
+    border-color: #36ff65;
+  }
+
+  .alert-warning {
+    color: #fe0000;
+    background-color: #ffd3d3;
+    border-color: #ffe4e4;
+  }
+  .alert-View {
+    color: #000000;
+    background-color: #cecece;
+    border-color: #c2c1c1;
+  }
+</style>
+<div class="container-fluid">
+
+
+  <section class="content-main">
+
+    <div class="card mb-4">
+      <header class="card-header">
+        <div class="row gx-3">
+          <form id="search-form" method="get" action="{% url 'user_search' %}">
+            <div class="row align-items-center">
+                <div class="col-md-8 mb-4" style="padding-top:28px;">
+                    <div class="form-outline">
+                        <input type="text" name="q" placeholder="Search..." class="form-control" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-primary btn-block">Search</button>
+                </div>
+            </div>
+        </form>
+        
+          <div class="col-lg-2 col-6 col-md-3">
+            <select class="form-select">
+              <option>status</option>
+              <option>Active</option>
+              <option>Deactive</option>
+            </select>
+          </div>
+          <div class="col-lg-2 col-6 col-md-3">
+            <select class="form-select">
+              <option>Action</option>
+              <option>Block</option>
+              <option>Unblock</option>
+            </select>
+          </div>
+        </div>
+      </header>
+      <!-- card-header end// -->
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Sl</th>
+                <th scope="col">Name</th>
+                <th scope="col">Username</th>
+                <th scope="col">Email</th>
+                <th scope="col">Status</th>
+                <th scope="col" class="text-end">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+            
+              {% for user in users %}
+              
+              <tr>
+                <td style="text-align: center;">{{ forloop.counter }}</td>
+                <td><b>{{ user.first_name }} {{user.last_name}}</b> </td>
+                <td><b>{{ user.username }}</b></td>
+                <td><b>{{ user.email }} </b></td>
+
+                <td>
+                  {% if user.is_active %}
+                  <span class="badge rounded-pill alert-success">Active</span>
+                  {% else %}
+                  <span class="badge rounded-pill alert-warning">Deactive</span>
+                  {% endif %}
+                </td>
+                {% comment %} <td><a href="{% url 'user_view' user.id %}"><span class="badge rounded-pill alert-View btn btn ">View</span> </a></td> {% endcomment %}
+                <td class="text-end">
+                  {% if user.is_active %}
+                  <a href="#" class="btn btn-md rounded font-sm" data-bs-toggle="modal"
+                    data-bs-target="#confirmationModal{{ user.id }}"
+                    style="background-color: red; color: white;">Block</a>
+                  {% else %}
+                  <a href="#" class="btn btn-md rounded font-sm" data-bs-toggle="modal"
+                    data-bs-target="#confirmationModal{{ user.id }}"
+                    style="background-color: green; color: white;">Unblock</a>
+                  {% endif %}
+                </td>
+              </tr>
+  
+              {% endfor %}
+
+              <!-- Confirmation Modals -->
+              {% for user in users %}
+              <div class="modal fade" id="confirmationModal{{ user.id }}" tabindex="-1" role="dialog"
+                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      {% if user.is_active %}
+                      <h5 class="modal-title">Confirmation Block user</h5>
+                      {% else %}
+                      <h5 class="modal-title">Confirmation Unblock user</h5>
+                      {% endif %}
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      {% if user.is_active %}
+
+                      <h6 style="color:red">Are you sure Block this user ?</h6>
+                      {% else %}
+                      <h6 style="color:rgb(7, 194, 29)">Are you sure Unblock this user ?</h6>
+                      
+                      {% endif %}
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                      <a href="{% url 'user_status' user.id %}">
+                        <button type="button" class="btn btn-primary">Confirm</button>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {% endfor %}
+            </tbody>
+          </table>
+
+  </section>
+
+
+
+{% comment %} ----------------pagination ------------------{% endcomment %}
+<div class="d-flex justify-content-center">
+  <nav aria-label="...">
+    <ul class="pagination">
+      {% if users.has_previous %}
+        <li class="page-item">
+          <a href="?page={{ users.previous_page_number }}" class="page-link">Previous</a>
+        </li>
+      {% endif %}
+      
+      {% for num in users.paginator.page_range %}
+        {% if num == users.number %}
+          <li class="page-item active">
+            <span class="page-link">{{ num }}</span>
+          </li>
+        {% else %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+          </li>
+        {% endif %}
+      {% endfor %}
+      
+      {% if users.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ users.next_page_number }}">Next</a>
+        </li>
+      {% endif %}
+    </ul>
+  </nav>
+</div>
+
+</div>
+  {% endblock %}

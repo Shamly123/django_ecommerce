@@ -1,0 +1,119 @@
+{% extends 'admin-base.html' %}
+{% block title %}Order-management{% endblock %}
+{% load static %}
+{% block start %}
+
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            {% comment %} <h2 class="content-title card-title">User List</h2> {% endcomment %}
+            {% comment %} <p>All Users of Refined Radiance.</p> {% endcomment %}
+        </div>
+
+    </div>
+    <div class="card mb-4">
+        <header class="card-header">
+            <div class="row gx-3">
+
+                <div class="col-lg-2 col-6 col-md-3">
+                    <select class="form-select">
+                        <option>sort</option>
+                        <option>Show 30</option>
+                        <option>Show 40</option>
+                    </select>
+                </div>
+            </div>
+        </header>
+        <!-- card-header end// -->
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">Order Number</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Total Price</th>
+                            <th scope="col">Method</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in orders %}
+                        <tr>
+                            <td>  <a href="{% url 'order_details' order.uid %}">{{ order.order_number }}</a> </td>
+                            <td> {{order.user.email}} </td>
+                            <td> {{order.order_total}} </td>
+                            <td> {{order.method}} </td>
+                            <td> {{order.status}} </td>
+                            <td> {{order.created_at}} </td>
+                
+                            <td>
+                                <!-- Button trigger modal -->
+                                <button type="button" class="btn btn spacer c"
+                                    style="background-color: rgb(246, 250, 10); color:rgb(102, 94, 94)"
+                                    data-bs-toggle="modal" data-bs-target="#confirmEdit{{forloop.counter}}"><i class="ti ti-edit"></i>
+                                Edit
+                                </button>
+                                
+
+
+
+
+                                <!--Edit Modal -->
+                                <div class="modal fade" id="confirmEdit{{forloop.counter}}" tabindex="-1"
+                                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h3 class="modal-title fs-5" id="exampleModalLabel">Edit Status</h3>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form method="post" action="{% url 'edit_order_status' order.uid %}">
+                                                    {% csrf_token %}
+
+
+                                                    <div class="form-outline mb-4">
+                                                        <label class="form-label" for="order">Order Status</label>
+                                                        <select name="order_status" class="form-select">
+                                                            {% for status, status_label in order.status_choice %}
+                                                                <option value="{{ status }}" {% if status == order.status %}selected{% endif %}>{{ status_label }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                        
+                                                    </div>
+                                                  
+                                                    <div class="d-flex justify-content-center">
+                                                        <button type="submit"
+                                                            class="btn btn-primary btn-lg gradient-custom-4 w-50 text-light"
+                                                            >Save Changes</button>
+                                                    </div>
+
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Button trigger modal -->
+                            </td>
+                            </td>
+                        </tr>
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+            <!-- table-responsive //end -->
+        </div>
+        <!-- card-body end// -->
+    </div>
+    <!-- card end// -->
+
+</section>
+
+{% endblock %}

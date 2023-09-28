@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Login{% endblock %}
+{% block start %}
+<div style="margin-top:150px;">
+<div class="wrapper">
+        <div class="logo">
+            <img src="{% static '/assets/img/user.jpeg' %}" alt="">
+        </div>
+        <div class="text-center mt-4 name" style="text-align:center;margin-bottom:30px;">
+            Login Here
+        </div>
+        <form class="p-3 mt-3" method="post" action="">
+            {% csrf_token %}
+            {% include 'alert.html' %}
+            <div class="form-field d-flex align-items-center">
+                <span class="far fa-user"></span>
+                <input type="text" name="email" id="userName" placeholder="Email" required>
+            </div>
+            <div class="form-field d-flex align-items-center">
+                <span class="fas fa-key"></span>
+                <input type="password" name="password" id="pwd" placeholder="Password" required>
+            </div>
+            <button class="btn mt-3">Login</button>
+        </form>
+        <div class="text-center fs-6">
+            <a href={% url 'forgotPassword' %} style="padding-left:20px;">Forgot password?</a> or <a href="{% url 'register' %}" style="padding-left:20px;">Sign up</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

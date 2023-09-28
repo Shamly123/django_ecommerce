@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Register{% endblock %}
+{% block start %}
+{% if not otp %}
+<div style="margin-top:150px;">
+<div class="wrapper">
+        <div class="logo">
+            <img src="{% static '/assets/img/user.jpeg' %}" alt="">
+        </div>
+        <div class="text-center mt-4 name" style="text-align:center;margin-bottom:30px;">
+            SignUp Here
+        </div>
+        <form class="p-3 mt-3" method="post" action="">
+            {% csrf_token %}
+            <div class="form-field d-flex align-items-center">
+                <span class="far fa-user"></span>
+                <input type="text" name="first_name" id="userName" placeholder="firstname" required>
+            </div>
+             <div class="form-field d-flex align-items-center">
+                <span class="far fa-user"></span>
+                <input type="text" name="last_name" id="userName1" placeholder="lastname" required>
+            </div>
+             <div class="form-field d-flex align-items-center">
+                <span class="far fa-user"></span>
+                <input type="email" name="email" id="email" placeholder="Email Id" required>
+            </div>
+            <div class="form-field d-flex align-items-center">
+                <span class="fas fa-key"></span>
+                <input type="password" name="password" id="pwd" placeholder="Password" required>
+            </div>
+            <div class="form-field d-flex align-items-center">
+                <span class="fas fa-key"></span>
+                <input type="password" name="re_password" id="pwd1" placeholder="Re-Password" required>
+            </div>
+            <div class="form-field d-flex align-items-center">
+                <span class="fas fa-key"></span>
+                <input type="text" name="phone_number" id="phone" placeholder="Phone Number" required>
+            </div>
+            <button type="submit" class="btn mt-3">Register</button>
+        </form>
+        <div class="text-center fs-6">
+            <a href="{% url 'login_page' %}" style="padding-left:20px;">Already Have an Account?</a>
+        </div>
+    </div>
+</div>
+
+{% else %}
+<div style="margin-top:150px;">
+<div class="wrapper">
+
+        <form class="p-3 mt-3" method="post" action="">
+            {% csrf_token %}
+            {% include "alert.html" %}
+            <h6>Enter Your OTP Here:</h6>
+            <div class="form-field d-flex align-items-center">
+                <span class="far fa-user"></span>
+                <input type="text" name="otp" id="otp" placeholder="OTP" required>
+            </div>
+            <div style="display:none;">
+            <input type="text" value="{{email}}"  name="email">
+            </div>
+
+            <button type="submit" class="btn mt-3">Verify</button>
+        </form>
+        <div class="text-center fs-6">
+            <a href="#" style="padding-left:20px;">Resend Otp:</a>
+        </div>
+    </div>
+</div>
+
+{% endif %}
+
+{% endblock %}

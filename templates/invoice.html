@@ -1,0 +1,100 @@
+{% load static %}
+
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta http-equiv="cache-control" content="max-age=604800" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="/static/css/bootstrap.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+    <h2 style="text-align: center;">Invoice</h2>
+
+<div>
+    <div class="col-lg-6">
+        <!-- col-lg-6 start here -->
+        <div class="invoice-logo"><img src="/static/images/logo.png" alt="Invoice logo" style="max-height: 40px;"></div>
+    </div>
+    <div style="text-align: right; display:inline;">
+        <ul style="list-style-type: none; padding: 0;">
+            <li><strong>Invoiced To</strong></li>
+            <li>{{order.address.first_name}}{{order.address.last_name}}</li>
+            <li> {{order.address.house_name}} </li>
+            <li> {{order.address.street}} </li>
+            <li>{{order.address.city}},{{order.address.state}} </li>
+            <li>{{order.address.pincode}}</li>
+            <li> {{order.address.phone_number}} </li>
+        </ul>
+    </div>
+    <!-- Add more sections with inline styles -->
+</div>
+
+<div style="text-align: left; display: inline;">
+    <ul style="list-style-type: none; padding: 0;">
+        <li><strong>Order Number:</strong> #{{order.order_number}}</li>
+        <li><strong>Transaction:</strong> #{{order.method}}</li>
+        <li><strong>Order Date:</strong> #{{order.created_at}}</li>
+        <li><strong>Status:</strong> #{{order.status}}</li>
+    </ul>
+</div><br>
+
+
+<div class="invoice-items">
+    <div class="table-responsive" style="overflow: hidden; outline: none;" tabindex="0">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th class="per70 text-center">Description</th>
+                    <th class="per5 text-center">Qty</th>
+                    <th class="per25 text-center">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for orderItem in order.order_item.all %}
+                <tr>
+                    <td>{{orderItem.product.product_name}}</td>
+                    <td >{{orderItem.quantity}}</td>
+                    <td >₹{{orderItem.product.price}}</td>
+                </tr>
+                {% endfor %}
+                
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th colspan="2" class="text-right">Sub Total:</th>
+                    <th class="text-center">₹{{order.subtotal}}</th>
+                </tr>
+                <tr>
+                    <th colspan="2" class="text-right"> Coupon:</th>
+                    <th class="text-center" style="color:red;">{{order.coupon_price}}</th>
+                </tr>
+                <tr>
+                    <th colspan="2" class="text-right"> Shipping</th>
+                    <th class="text-center" style="color:green;">FREE</th>
+                </tr>
+<tr>
+                    <th colspan="2" class="text-right"> Offer</th>
+                    <th class="text-center">₹ {{order.offer}}</th>
+                </tr> 
+                
+                <tr>
+                    <th colspan="2" class="text-right">Grand Total:</th>
+                    <th class="text-center">₹{{order.order_total}}</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+<br><br>
+
+<div style="text-align: center;">
+    {% comment %} {% if not request.user.is_authenticated %}
+    <p>You purchased this item as a guest user!</p>
+    {% endif %} {% endcomment %}
+    <p>Thank you for shopping with us!</p>
+</div>
+
+</body>
+</html>

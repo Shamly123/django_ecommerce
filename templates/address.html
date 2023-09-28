@@ -1,0 +1,257 @@
+{% extends 'base.html' %}
+
+{% block title %}Address{% endblock %}
+{% load static %}
+{% block start%}
+
+<div class="container mt-4" style="padding-top:95px;">
+    <div class="row">
+        <div class="col-lg-3 my-lg-0 my-md-1">
+            <div id="sidebar" class="bg-purple">
+                <div class="h4 text-white">Account</div>
+                <ul>
+                    <li class="active">
+                        <a href="{% url 'user_profile' %}" class="text-decoration-none d-flex align-items-start">
+                            <div class="fas fa-box pt-2 me-3"></div>
+                            <div class="d-flex flex-column">
+                                <div class="link">My Account</div>
+                                <div class="link-desc">View & Manage orders and returns</div>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'userOrders' %}" class="text-decoration-none d-flex align-items-start">
+                            <div class="fas fa-box-open pt-2 me-3"></div>
+                            <div class="d-flex flex-column">
+                                <div class="link">My Orders</div>
+                                <div class="link-desc">View & Manage orders and returns</div>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'user_address' %}" class="text-decoration-none d-flex align-items-start">
+                            <div class="far fa-address-book pt-2 me-3"></div>
+                            <div class="d-flex flex-column">
+                                <div class="link">Address Book</div>
+                                <div class="link-desc">View & Manage Addresses</div>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'user_detail' %}" class="text-decoration-none d-flex align-items-start">
+                            <div class="far fa-user pt-2 me-3"></div>
+                            <div class="d-flex flex-column">
+                                <div class="link">My Profile</div>
+                                <div class="link-desc">Change your profile details & password</div>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="text-decoration-none d-flex align-items-start">
+                            <div class="fas fa-headset pt-2 me-3"></div>
+                            <div class="d-flex flex-column">
+                                <div class="link">Help & Support</div>
+                                <div class="link-desc">Contact Us for help and support</div>
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-lg-9 my-lg-0 my-1">
+            <div id="main-content" class="bg-white border">
+                <div class="card-header py-3">
+                    <h5 class="mb-0 text-font text-uppercase">Address Details:</h5>
+                </div>
+                
+                <div class="card-body">
+                    {% for add in address %}
+                    <strong>{{add.first_name}} {{add.last_name}}</strong><br>
+                    <div class="modal-footer">
+                        <!-- one here -->
+                        
+                        <a href="{% url 'delete_address' add.uid %}" class="btn btn-warning">Delete</a>
+                    </div>
+                    {{add.house_name}}<br>
+                    {{add.street}}<br>
+                    {{add.city}},{{add.state}}<br>
+                    {{add.pincode}}<br>
+                    {{add.phone_number}}<br>
+                    {{add.alternate_number}}<br>
+                    <a href="#" data-toggle="modal" data-target="#editaddress{{forloop.counter}}">Edit</a><br><br>
+                    {% comment %} edit address with modal {% endcomment %}
+                    <div class="modal fade" id="editaddress{{forloop.counter}}" tabindex="-1"
+                                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog"> 
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h3 class="modal-title fs-5" >Edit</h3>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form method="post" action="{% url 'edit_address' add.uid %}">
+                                        {% csrf_token %}
+                                        <div class="form-outline mb-4">
+                                            
+                                            <label class="form-label" for="form3Example3cg">First
+                                                name:</label>
+                                            <input name='first_name' value="{{add.first_name}}" type="text"
+                                                class="form-control form-control-lg" />
+                                        </div>
+                                        <div class="form-outline mb-4">
+                                           
+                                            <label class="form-label" for="form3Example3cg">Last
+                                                name:</label>
+                                            <input name='last_name' value="{{add.last_name}}" type="text"
+                                                class="form-control form-control-lg" />
+                                        </div>
+                                        <div class="form-outline mb-4">
+                                            
+                                            <label class="form-label" for="form3Example3cg">House
+                                                name/House No:</label>
+                                            <input name='house_name' value="{{add.house_name}}" type="text"
+                                                class="form-control form-control-lg" />
+                                        </div>
+                                        <div class="form-outline mb-4">
+                                            
+                                            <label class="form-label" for="form3Example3cg">Road Name,Area,Colony:
+                                                </label>
+                                            <input name='road_name' value="{{add.street}}" type="text"
+                                                class="form-control form-control-lg" />
+                                        </div>
+                                        <div class="form-outline mb-4">
+                                            
+                                            <label class="form-label" for="form3Example3cg">Pincode
+                                                :</label>
+                                            <input name='pincode' value="{{add.pincode}}" type="text"
+                                                class="form-control form-control-lg" />
+                                        </div>
+                                        <div class="form-outline mb-4">
+                                            
+                                            <label class="form-label" for="form3Example3cg">State
+                                                :</label>
+                                            <input name='state' value="{{add.state}}" type="text"
+                                                class="form-control form-control-lg" />
+                                        </div>
+                                        <div class="form-outline mb-4">
+                                            
+                                            <label class="form-label" for="form3Example3cg">City
+                                                :</label>
+                                            <input name='city' value="{{add.city}}" type="text"
+                                                class="form-control form-control-lg" />
+                                        </div>
+                                        <div class="form-outline mb-4">
+                                           
+                                            <label class="form-label" for="form3Example3cg">Phone Number
+                                                :</label>
+                                            <input name='phone_number' value="{{add.phone_number}}" type="text"
+                                                class="form-control form-control-lg" />
+                                        </div>
+                                        <div class="form-outline mb-4">
+                                            
+                                            <label class="form-label" for="form3Example3cg">Alternate Number
+                                                :</label>
+                                            <input name='alternate_number' value="{{add.alternate_number}}" type="text"
+                                                class="form-control form-control-lg" />
+                                        </div>
+                                        <div class="d-flex justify-content-center">
+                                            <button type="submit"
+                                                class="btn btn-primary btn-lg gradient-custom-4 w-50 text-light"
+                                                type="submit">Save Changes</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>           
+                    </div>
+                    {% endfor%}
+               
+                </div>
+               
+            </div>
+            {% comment %} Add address {% endcomment %}
+            <div style="padding-top:25px;">
+                <div style="float:left;">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addaddress">
+                        Add address
+                    </button>
+                    <div class="modal fade" id="addaddress" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Add Address:</h1>
+                                    <br>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="{% url 'add_address' %}"  method="POST">
+                                        {% csrf_token %}
+                                        <div style="width: 100px;" class="">
+                                        </div>
+                                        <div class="form-outline mb-4">
+                                            <label class="form-label" for="form3Example3cg"> First Name</label>
+                                            <input name='first_name' value="" type="text" id="form3Example3cg"
+                                                class="form-control form-control-lg" />
+                                        </div>
+                                        <div class="form-outline mb-4">
+                                            <label class="form-label" for="form3Example3cg">Last Name</label>
+                                            <input name='last_name' value="" type="text" id="form3Example3cg"
+                                                class="form-control form-control-lg"   required>
+                                        </div>
+                                        <div class="form-outline mb-4">
+                                            <label class="form-label" for="form3Example3cg">House Name/House No:</label>
+                                            <input name='house_name' value="" type="text" id="form3Example3cg"
+                                                class="form-control form-control-lg"  required>
+                                        </div>
+                                        <div class="form-outline mb-4">
+                                            <label class="form-label" for="form3Example3cg">Road Name,Area,Colony:</label>
+                                            <input name='road_name' value="" type="text" id="form3Example3cg"
+                                                class="form-control form-control-lg"  required>
+                                        </div>
+                                        <div class="form-outline mb-4">
+                                            <label class="form-label" for="form3Example3cg">Pincode:</label>
+                                            <input name='pincode' value="" type="text" id="form3Example3cg"
+                                                class="form-control form-control-lg"  required>
+                                        </div>
+                                        <div class="form-outline mb-4">
+                                            <label class="form-label" for="form3Example3cg">State:</label>
+                                            <input name='state' value="" type="text" id="form3Example3cg"
+                                                class="form-control form-control-lg"  required>
+                                        </div>
+                                        <div class="form-outline mb-4">
+                                            <label class="form-label" for="form3Example3cg">City:</label>
+                                            <input name='city' value="" type="text" id="form3Example3cg"
+                                                class="form-control form-control-lg"  required>
+                                        </div>
+                                        <div class="form-outline mb-4">
+                                            <label class="form-label" for="form3Example3cg">Phone Number:</label>
+                                            <input name='phone_number' value="" type="text" id="form3Example3cg"
+                                                class="form-control form-control-lg" required>
+                                        </div>
+                                        <div class="form-outline mb-4">
+                                            <label class="form-label" for="form3Example3cg"> Alternate Phone Number:</label>
+                                            <input name='alternate_number' value="" type="text" id="form3Example3cg"
+                                                class="form-control form-control-lg" required>
+                                        </div>
+                                        <div class="d-flex justify-content-center">
+                                            <button type="submit" class="btn btn-danger btn-lg gradient-custom-4 w-50 text-light"
+                                                type="submit">Save </button>
+                                        </div>
+                                    </form>
+                                </div>        
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

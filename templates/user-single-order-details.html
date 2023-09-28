@@ -1,0 +1,336 @@
+{% extends 'base.html' %}
+
+{% block title %}Order Details{% endblock %}
+{% load static %}
+{% block start%}
+<style>
+    {% comment %} .gradient-custom-2 {
+        /* fallback for old browsers */
+        background: #a1c4fd;
+        
+        /* Chrome 10-25, Safari 5.1-6 */
+        background: -webkit-linear-gradient(to right, rgba(161, 196, 253, 1), rgba(194, 233, 251, 1));
+        
+        /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+        background: linear-gradient(to right, rgba(161, 196, 253, 1), rgba(194, 233, 251, 1))
+        }
+         {% endcomment %}
+        #progressbar-1 {
+        color: #455A64;
+        }
+        
+        #progressbar-1 li {
+        list-style-type: none;
+        font-size: 13px;
+        width: 33.33%;
+        float: left;
+        position: relative;
+        }
+        
+        #progressbar-1 #step1:before {
+        content: "1";
+        color: #fff;
+        width: 29px;
+        margin-left: 22px;
+        padding-left: 11px;
+        }
+        
+        #progressbar-1 #step2:before {
+        content: "2";
+        color: #fff;
+        width: 29px;
+        }
+        
+        #progressbar-1 #step3:before {
+        content: "3";
+        color: #fff;
+        width: 29px;
+        margin-right: 22px;
+        text-align: center;
+        }
+        
+        #progressbar-1 li:before {
+        line-height: 29px;
+        display: block;
+        font-size: 12px;
+        background: #455A64;
+        border-radius: 50%;
+        margin: auto;
+        }
+        
+        #progressbar-1 li:after {
+        content: '';
+        width: 121%;
+        height: 2px;
+        background: #455A64;
+        position: absolute;
+        left: 0%;
+        right: 0%;
+        top: 15px;
+        z-index: -1;
+        }
+        
+        #progressbar-1 li:nth-child(2):after {
+        left: 50%
+        }
+        
+        #progressbar-1 li:nth-child(1):after {
+        left: 25%;
+        width: 121%
+        }
+        
+        #progressbar-1 li:nth-child(3):after {
+        left: 25%;
+        width: 50%;
+        }
+        
+        #progressbar-1 li.active:before,
+        #progressbar-1 li.active:after {
+        background: #1266f1;
+        }
+        
+        .card-stepper {
+        z-index: 0
+        }
+
+        
+    </style>
+
+<div class="container mt-4" style="padding-top:95px;">
+    <div class="row">
+        <div class="col-lg-3 my-lg-0 my-md-1">
+            <div id="sidebar" class="bg-purple">
+                <div class="h4 text-white">Account</div>
+                <ul>
+                    <li class="active">
+                        <a href="{% url 'user_profile' %}" class="text-decoration-none d-flex align-items-start">
+                            <div class="fas fa-box pt-2 me-3"></div>
+                            <div class="d-flex flex-column">
+                                <div class="link">My Account</div>
+                                <div class="link-desc">View & Manage orders and returns</div>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'userOrders' %}" class="text-decoration-none d-flex align-items-start">
+                            <div class="fas fa-box-open pt-2 me-3"></div>
+                            <div class="d-flex flex-column">
+                                <div class="link">My Orders</div>
+                                <div class="link-desc">View & Manage orders and returns</div>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'user_address' %}" class="text-decoration-none d-flex align-items-start">
+                            <div class="far fa-address-book pt-2 me-3"></div>
+                            <div class="d-flex flex-column">
+                                <div class="link">Address Book</div>
+                                <div class="link-desc">View & Manage Addresses</div>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'user_detail' %}" class="text-decoration-none d-flex align-items-start">
+                            <div class="far fa-user pt-2 me-3"></div>
+                            <div class="d-flex flex-column">
+                                <div class="link">My Profile</div>
+                                <div class="link-desc">Change your profile details & password</div>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="text-decoration-none d-flex align-items-start">
+                            <div class="fas fa-headset pt-2 me-3"></div>
+                            <div class="d-flex flex-column">
+                                <div class="link">Help & Support</div>
+                                <div class="link-desc">Contact Us for help and support</div>
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-lg-9 my-lg-0 my-1">
+            <div id="main-content" class="bg-white border">
+              <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-md-10 col-lg-8 col-xl-6" style="padding-right:900px;">
+                  <div class="card card-stepper" style="border-radius:25; width:900px;">
+                    <div class="card-header p-4">
+                      <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                          <p class="text-muted mb-2"> Order ID <span class="fw-bold text-body">:{{order.order_number}}</span></p>
+                          <p class="text-muted mb-0"> Place On <span class="fw-bold text-body">:{{order.created_at}}</span> </p>
+      
+                            <a href="{% url 'download_invoice' order.uid %}" class="download-link" style="float:right; padding-left:700px;">
+                                <i class="fas fa-file-download"></i> Download Invoice
+                            </a>
+                        
+                        </div>
+                        {% comment %} <div>
+                          <h6 class="mb-0"> <a href="#">View Details</a> </h6>
+                        </div> {% endcomment %}
+                      </div>
+                    </div>
+                    <div class="card-body p-4">
+                        {% for item in order_items %}
+                      <div class="d-flex flex-row mb-4 pb-2">
+                        <div class="flex-fill">
+                          <h5 class="bold">{{item.product.product_name}}</h5>
+                          <p class="text-muted">Price:{{item.product.price}}</p>
+                          <p class="text-muted">Qty:{{item.quantity}}</p>
+                          
+                          <div class="invoice-from">
+                            <ul class="list-unstyled text-left">
+                                <li><strong>Shipping Address:</strong></li>
+                                <li>{{order.address.first_name}}{{order.address.last_name}}</li>
+                                <li> {{order.address.house_name}} </li>
+                                <li> {{order.address.street}} </li>
+                                <li>{{order.address.city}},{{order.address.state}} </li>
+                                <li>{{order.address.pincode}}</li>
+                                <li>{{order.address.phone_number}} </li>
+                            </ul>
+                        </div>
+                        </div>
+                        <div>
+                          <img class="align-self-center img-fluid"
+                            src="{{item.product.product_images.first.image.url}}" width="250">
+                        </div>
+                      </div>
+                      {% endfor %}
+                      <p class="text-muted">Shipping: Free</p>
+                          <p class="text-muted">Coupon Applied:{{order.coupon_price}}</p>
+                          <p class="text-muted">Offer Price:{{order.offer}}</p>
+                          <h4 class="mb-3">Total: {{order.order_total}} <span class="small text-muted"> via ({{order.method}}) </span></h4>
+                          <p class="text-muted">Tracking Status on: <span class="text-body">11:30pm, Today</span></p>
+                      {% if order.status == 'Delivered' %}
+                      <ul id="progressbar-1" class="mx-0 mt-0 mb-5 px-0 pt-0 pb-4">
+                        <li class="step0 active" id="step1"><span
+                            style="margin-left: 22px; margin-top: 12px;">PLACED</span></li>
+                        <li class="step0 active text-center" id="step2"><span>SHIPPED</span></li>
+                        <li class="step0 active text-end" id="step3"><span
+                            style="margin-right: 22px;">DELIVERED</span></li>
+                      </ul>
+                      {% endif %}
+                      {% if order.status == 'Shipped' %}
+                      <ul id="progressbar-1" class="mx-0 mt-0 mb-5 px-0 pt-0 pb-4">
+                        <li class="step0 active" id="step1"><span
+                            style="margin-left: 22px; margin-top: 12px;">PLACED</span></li>
+                        <li class="step0 active text-center" id="step2"><span>SHIPPED</span></li>
+                        <li class="step0 text-muted text-end" id="step3"><span
+                            style="margin-right: 22px;">DELIVERED</span></li>
+                      </ul>
+                      {% endif %}
+                      {% if order.status == 'Order placed' %}
+                      <ul id="progressbar-1" class="mx-0 mt-0 mb-5 px-0 pt-0 pb-4">
+                        <li class="step0 active" id="step1"><span
+                            style="margin-left: 22px; margin-top: 12px;">PLACED</span></li>
+                        <li class="step0 text-muted text-end" id="step2"><span>SHIPPED</span></li>
+                        <li class="step0 text-muted text-end" id="step3"><span
+                            style="margin-right: 22px;">DELIVERED</span></li>
+                      </ul>
+                      {% endif %}
+                    </div>
+
+                    {% if order.status != 'Delivered'%}
+                    <div class="card-footer p-4">
+                      <div class="d-flex justify-content-between">
+                        {% if order.status == 'Cancelled' %}
+                        <button type="button" class="btn btn-secondary" id="continueShoppingButton">Continue Shopping</button>
+                        {% elif order.status == 'Returned' %}
+                          <button type="button" class="btn btn-secondary" id="continueShoppingButton">Continue Shopping</button>
+                        
+
+                        {% else %}
+                        <button type="button" class="btn btn-danger" id="cancelOrderButton">Cancel Order</button>
+                        {% endif %}
+                      </div>
+                    </div>
+                      {% elif order.status == 'Delivered'%}
+                      <div class="card-footer p-4">
+                        <div class="d-flex justify-content-between">
+                      
+                          <button type="button" class="btn btn-danger" id="returnOrderButton">Return Order</button>
+                        </div>
+                        </div>
+                      </div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  // Wait for the document to be fully loaded
+  document.addEventListener("DOMContentLoaded", function () {
+      // Select the "Cancel Order" button by its ID
+      const cancelOrderButton = document.getElementById("cancelOrderButton");
+
+      // Add a click event listener to the button
+      cancelOrderButton.addEventListener("click", function () {
+          // Show a SweetAlert2 confirmation dialog
+          Swal.fire({
+              title: "Confirm Cancel Order",
+              text: "Are you sure you want to cancel this order?",
+              icon: "warning",
+              showCancelButton: true,
+              confirmButtonColor: "#3085d6",
+              cancelButtonColor: "#d33",
+              confirmButtonText: "Yes, cancel it!",
+          }).then((result) => {
+              if (result.isConfirmed) {
+                  // If the user confirms, you can proceed with the cancellation
+                  // You can make an AJAX request to your Django view here or redirect as needed
+                  window.location.href = "{% url 'cancel_order' order.uid %}";
+
+                  // For now, let's display a success message
+                  Swal.fire("Order Cancelled!", "Your order has been cancelled.", "success");
+              }
+          });
+      });
+  });
+  document.addEventListener("DOMContentLoaded", function () {
+    // Select the "Continue Shopping" button by its ID
+    const continueShoppingButton = document.getElementById("continueShoppingButton");
+
+    // Add a click event listener to the button
+    continueShoppingButton.addEventListener("click", function () {
+        // Redirect the user to the shopping page URL
+        window.location.href = "{% url 'shopview' %}";
+    });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  // Select the "Return Order" button by its ID
+  const returnOrderButton = document.getElementById("returnOrderButton");
+
+  // Add a click event listener to the button
+  returnOrderButton.addEventListener("click", function () {
+      // Show a SweetAlert2 confirmation dialog
+      Swal.fire({
+          title: "Confirm Return Order",
+          text: "Are you sure you want to return this order?",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, return it!",
+      }).then((result) => {
+          if (result.isConfirmed) {
+              // If the user confirms, you can proceed with the return
+              // You can make an AJAX request to your Django view here or redirect as needed
+              window.location.href = "{% url 'return_order' order.uid %}";
+
+              // For now, let's display a success message
+              Swal.fire("Order Returned!", "Your order has been returned.", "success");
+          }
+      });
+  });
+});
+</script>
+
+{% endblock %}

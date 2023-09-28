@@ -1,0 +1,265 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block start %}
+<style>
+    figure.zoom {
+      
+      background-position: 50% 50%;
+      position: relative;
+      width: 500px;
+      overflow: hidden;
+      cursor: zoom-in;
+    }
+    
+    figure.zoom img:hover {
+      opacity: 0;
+    }
+    
+    figure.zoom img {
+      transition: opacity .5s;
+      display: block;
+      width: 100%;
+    }
+  </style>
+
+	<!-- search area -->
+	<div class="search-area">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12">
+					<span class="close-btn"><i class="fas fa-window-close"></i></span>
+					<div class="search-bar">
+						<div class="search-bar-tablecell">
+							<h3>Search For:</h3>
+							<input type="text" placeholder="Keywords">
+							<button type="submit">Search <i class="fas fa-search"></i></button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- end search arewa -->
+	
+	<!-- breadcrumb-section -->
+	<div class="breadcrumb-section breadcrumb-bg">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-8 offset-lg-2 text-center">
+					<div class="breadcrumb-text">
+						<p>See more Details</p>
+						<h1>Product Details</h1>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- end breadcrumb section -->
+
+	<!-- single product -->
+	<div class="single-product mt-150 mb-150">
+		<div class="container">
+			<div class="row">
+				 <div class="col-md-5">
+                <div class="single-product-img" id="container">  
+                {% for image in product.product_images.all %}
+                <figure class="zoom" onmousemove="zoom(event)" id="figure_{{ forloop.counter }}">
+                    <img class="mySlides" src="/media/{{ image.image }}" alt="">
+                    <script>
+                        var figure = document.getElementById("figure_{{ forloop.counter }}");
+                        var imgSrc = "{{ image.image.url }}";
+                        figure.style.backgroundImage = `url('${imgSrc}')`;
+                    </script>
+                </figure>
+            {% endfor %}
+                    
+                </div>
+                <div class="column d-flex">
+                    {% for image in product.product_images.all %}
+                        <img class="demo cursor" src="/media/{{image.image}}" style="width:150px;"  onclick="currentSlide({{forloop.counter}})" alt="The Woods">
+                    {% endfor %}
+                </div>
+            </div>
+				<div class="col-md-7">
+					<div class="single-product-content">
+						<h3>{{product.product_name}}</h3>
+						<span>Per Kg</span>
+						{% if offer_price %}
+						<p class="single-product-pricing"><s>₹{{product.price}}</s></p>
+						<p class="single-product-pricing">₹{{offer_price}}</p>
+					
+						{% else %}
+						<p class="single-product-pricing">₹{{product.price}}</p>
+						{% endif %}
+						<p>{{product.description}}</p>
+						<br>
+						<br>
+						<br>
+						<div class="single-product-form">
+							<form action="index.html">
+							{% comment %} <span>Qty </span><input type="number" placeholder="0"> {% endcomment %}
+							</form>
+							<a href="{% url 'add_cart' product.id %}" class="cart-btn" style="text-decoration:None;"><i class="fas fa-shopping-cart"></i> Add to Cart</a>
+							<button class="add-to-wishlist" data-product-id="{{ product.id }}" style="background-color:#7a6e67;border-radius:20px;height:40px;width:150px;"><i class="fas fa-heart"></i>Add to Wishlist</button>							
+							<p><strong>Categories: </strong>Fruits, Organic</p>
+							<div id="notification"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- end single product -->
+
+	<!-- more products -->
+	<div class="more-products mb-150">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-8 offset-lg-2 text-center">
+					<div class="section-title">	
+						<h3><span class="orange-text">Related</span> Products</h3>
+						<p>{{product.description}}</p>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-4 col-md-6 text-center">
+					<div class="single-product-item">
+						<div class="product-image">
+							<a href="single-product.html"><img src="{% static 'assets/img/products/product-img-1.jpg' %}" alt=""></a>
+						</div>
+						<h3>Strawberry</h3>
+						<p class="product-price"><span>Per Kg</span> 85$ </p>
+						<a href="cart.html" class="cart-btn"><i class="fas fa-shopping-cart"></i>Buy Now</a>
+					</div>
+				</div>
+<!--
+			</div>
+		</div>
+	</div>
+
+
+
+	<div class="logo-carousel-section">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="logo-carousel-inner">
+						<div class="single-logo-item">
+							<img src="{% static 'assets/img/company-logos/1.png' %}" alt="">
+						</div>
+						<div class="single-logo-item">
+							<img src="{% static 'assets/img/company-logos/2.png' %}" alt="">
+						</div>
+						<div class="single-logo-item">
+							<img src="{% static 'assets/img/company-logos/3.png' %}" alt="">
+						</div>
+						<div class="single-logo-item">
+							<img src="{% static 'assets/img/company-logos/4.png' %}" alt="">
+						</div>
+						<div class="single-logo-item">
+							<img src="{% static 'assets/img/company-logos/5.png' %}" alt="">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- end logo carousel -->
+<script>
+let slideIndex = 1;
+showSlides(slideIndex);
+
+// Next/previous controls
+function plusSlides(n) {
+  showSlides(slideIndex += n);
+}
+
+// Thumbnail image controls
+function currentSlide(n) {
+  showSlides(slideIndex = n);
+}
+
+function showSlides(n) {
+  let i;
+  let slides = document.getElementsByClassName("mySlides");
+  let dots = document.getElementsByClassName("demo");
+  let captionText = document.getElementById("caption");
+  if (n > slides.length) {slideIndex = 1}
+  if (n < 1) {slideIndex = slides.length}
+  for (i = 0; i < slides.length; i++) {
+    slides[i].style.display = "none";
+  }
+  for (i = 0; i < dots.length; i++) {
+    dots[i].className = dots[i].className.replace(" active", "");
+  }
+  slides[slideIndex-1].style.display = "block";
+  dots[slideIndex-1].className += " active";
+  captionText.innerHTML = dots[slideIndex-1].alt;
+}
+
+
+</script>
+<script>
+    function zoom(e) {
+      var zoomer = e.currentTarget;
+      var offsetX, offsetY;
+      
+      if (e.offsetX) {
+        offsetX = e.offsetX;
+        offsetY = e.offsetY;
+      } else {
+        offsetX = e.touches[0].pageX;
+        offsetY = e.touches[0].pageY;
+      }
+      
+      var x = offsetX / zoomer.offsetWidth * 100;
+      var y = offsetY / zoomer.offsetHeight * 100;
+      
+      zoomer.style.backgroundPosition = x + '% ' + y + '%';
+    }
+  </script>
+
+  <script>
+    // JavaScript to handle the button click and AJAX request
+    const addToWishlistButtons = document.querySelectorAll('.add-to-wishlist');
+    const notification = document.getElementById('notification');
+	const url ="{% url 'add_to_wishlist'%}";
+
+    addToWishlistButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const productId = button.getAttribute('data-product-id');
+			
+
+            // Send an AJAX POST request to the server to add the product to the wishlist
+            fetch( url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken'), // Include CSRF token
+                },
+                body: JSON.stringify({ product_id: productId }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    notification.innerText = 'Product added to wishlist!';
+					console.log('sdfg')
+                } else {
+                    notification.innerText = 'Failed to add the product to the wishlist.';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    });
+
+    // Function to get CSRF token (you may need to adjust this)
+    function getCookie(name) {
+        const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+        return cookieValue ? cookieValue.pop() : '';
+    }
+</script>
+{% endblock %}

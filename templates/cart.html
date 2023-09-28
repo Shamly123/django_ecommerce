@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+
+{% block title %}Cart{% endblock %}
+{% load static %}
+{% block start%}
+
+<!-- breadcrumb-section -->
+<div class="breadcrumb-section breadcrumb-bg">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 offset-lg-2 text-center">
+        <div class="breadcrumb-text">
+          <p>Fresh and Organic</p>
+          <h1>Cart</h1>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- end breadcrumb section -->
+{% if not cart_items %}
+<br>
+<br>
+<br>
+<div>
+<div style="margin-top:100px;">
+    <div class="text-center">
+        <br>
+        <h1 class="text-center my_title">
+        Your Shopping Cart is Empty
+        </h1>
+        <br>
+        <p class="text-center">
+            Please Click <a href="{% url 'shopview' %}">Here</a>to Continue Your Shopping.
+        </p>
+    </div>
+</div>
+{% else%}
+<!-- cart -->
+<div class="cart-section mt-150 mb-150">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-12">
+        <div class="cart-table-wrap">
+          <table class="cart-table">
+            <thead class="cart-table-head">
+              <tr class="table-head-row">
+                <th class="product-remove"></th>
+                <th class="product-image">Product Image</th>
+                <th class="product-name">Name</th>
+                <th class="product-price">Price</th>
+                <th class="product-quantity">Quantity</th>
+                <th class="product-total">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for cart_item in cart_items %}
+              <tr class="table-body-row">
+                <td class="product-remove"><a href="{% url 'full_remove' cart_item.product.id %}"><i class="far fa-window-close"></i></a></td>
+                <td class="product-image"><img src="{{ cart_item.product.product_images.first.image.url }}" alt=""></td>
+                <td class="product-name">{{cart_item.product.product_name}}</td>
+                <td class="product-price">{{cart_item.product.price}}</td>
+                <td class="product-quantity">
+                  <div class="quantity">
+                    <input type="number" id="new_quantity" class="form-control quantity-input" step="1" min="1" data-id="{{ cart_item.id }}" value="{{ cart_item.quantity }}" title="Qty" size="4" placeholder="" inputmode="numeric" autocomplete="off">
+                  </div>
+                </td>
+                <td><span data-id="{{ cart_item.id }}" class="item-total">{{cart_item.sub_total}}</span></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="total-section">
+          <table class="total-table">
+            <thead class="total-table-head">
+              <tr class="table-total-row">
+                <th>Total</th>
+                <th>Price</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="total-data">
+                <td><strong>Subtotal: </strong></td>
+                <td><span id="subtotal">{{ total }}</span></td>
+              </tr>
+              <tr class="total-data">
+                <td><strong>Shipping: </strong></td>
+                <td style="color:green;">Free</td>
+              </tr>
+              {% if offer %}
+              <tr class="total-data">
+                <td><strong>Discount: </strong></td>
+                <td style="color:red;"> <span id="offer">{{offer}}</span></td>
+              </tr>
+              {% endif %}
+              {% if cart.coupon %}
+              <tr class="total-data">
+                <td><strong>Coupon:</strong></td>
+                <td style="color:red;"> - {{cart.coupon.couon_price}}</td>
+              </tr>
+              {% endif %}
+              <tr class="total-data">
+                <td><strong>Total: </strong></td>
+                <td><span id="order_total">{{ order_total }}</span></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="cart-buttons">
+            <a href="{% url 'shopview' %}" class="boxed-btn" style="text-decoration:none;">Continue Shopping</a>
+            <a href="{% url 'checkout' %}" class="boxed-btn black"  style="text-decoration:none;">Check Out</a>
+          </div>
+        </div>
+
+        <div class="coupon-section">
+          <h3>Apply Coupon</h3>
+          <div class="coupon-form-wrap">
+            <form method='post'>
+              {% include "alert.html" %}
+              {% csrf_token %}
+              <p><input type="text" name = "coupon_code" placeholder="Coupon"></p>
+              <Button type="submit" class="btn btn-success" >Apply</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- end cart -->
+{% endif %}
+</div>
+
+
+
+
+{% comment %} ======================= AJAX UPDATE Quantity {% endcomment %}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    const quantityInputs = document.querySelectorAll('.quantity-input');
+    const itemTotalSpans = document.querySelectorAll('.item-total');
+       quantityInputs.forEach((input, index) => {
+        input.addEventListener('input', function() {
+            const newValue = input.value;
+            const id = input.getAttribute('data-id');
+            console.log(newValue);
+            console.log(id);
+
+            fetch("{% url 'update_cart' %}", {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'X-CSRFToken': getCookie('csrftoken')
+              },
+              body: JSON.stringify({ id, quantity: newValue })
+          })
+
+
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                
+                updateItemTotal(data.product_total, id);
+                $('#order_total').text(data.order_total);
+                $('#subtotal').text(data.sub_total);
+                $('#offer').text(data.offer);
+                
+
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                
+            });
+        });
+    });
+        
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+        
+        function updateItemTotal(itemTotal, id) {
+            const itemTotalSpan = document.querySelector(`.item-total[data-id="${id}"]`);
+            if (itemTotalSpan) {
+                itemTotalSpan.textContent = itemTotal;
+            }
+        }
+
+
+</script>
+{% endblock %}

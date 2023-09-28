@@ -1,0 +1,403 @@
+{% extends 'base.html' %}
+
+{% block title %}Checkout{% endblock %}
+{% load static %}
+{% block start%}
+	
+	<!-- breadcrumb-section -->
+	<div class="breadcrumb-section breadcrumb-bg">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-8 offset-lg-2 text-center">
+					<div class="breadcrumb-text">
+						<p>Fresh and Organic</p>
+						<h1>Check Out Product</h1>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- end breadcrumb section -->
+
+	<!-- check out section -->
+	<div class="checkout-section mt-150 mb-150">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-8">
+					<div class="checkout-accordion-wrap">
+						<div class="accordion" id="accordionExample">
+						  <div class="card single-accordion">
+						    <div class="card-header" id="headingOne">
+						      <h5 class="mb-0">
+						        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+						          Delivery Address
+						        </button>
+						      </h5>
+						    </div>
+
+						    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+								<div class="card-body">
+									
+									
+									{% for add in addresses %}
+									<input type='radio' name="selected_address" value="{{ add.id }}"
+           								onclick="updateLinkUrl('{{ add.uid }}')">
+
+									<strong>{{add.first_name}} {{add.last_name}}</strong><br>
+									
+									{{add.house_name}}<br>
+									{{add.street}}<br>
+									{{add.city}},{{add.state}}<br>
+									{{add.pincode}}<br>
+									{{add.phone_number}}<br>
+									{{add.alternate_number}}<br>
+									<div class="modal fade" id="editaddress{{forloop.counter}}" tabindex="-1"
+													aria-labelledby="exampleModalLabel" aria-hidden="true">
+									</div>
+									<br>
+									{% endfor%}
+									<div style="padding-top:25px;">
+										<div style="float:left;">
+											<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addaddress">
+												Add address
+											</button>
+											<div class="modal fade" id="addaddress" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+												<div class="modal-dialog">
+													<div class="modal-content">
+														<div class="modal-header">
+															<h1 class="modal-title fs-5" id="exampleModalLabel">Add Address:</h1>
+															<br>
+															<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																<span aria-hidden="true">&times;</span>
+															</button>
+														</div>
+														<div class="modal-body">
+															<form action="{% url 'add_address' %}"  method="POST">
+																{% csrf_token %}
+																<div style="width: 100px;" class="">
+																</div>
+																<div class="form-outline mb-4">
+																	<label class="form-label" for="form3Example3cg"> First Name</label>
+																	<input name='first_name' value="" type="text" id="form3Example3cg"
+																		class="form-control form-control-lg" />
+																</div>
+																<div class="form-outline mb-4">
+																	<label class="form-label" for="form3Example3cg">Last Name</label>
+																	<input name='last_name' value="" type="text" id="form3Example3cg"
+																		class="form-control form-control-lg"   required>
+																</div>
+																<div class="form-outline mb-4">
+																	<label class="form-label" for="form3Example3cg">House Name/House No:</label>
+																	<input name='house_name' value="" type="text" id="form3Example3cg"
+																		class="form-control form-control-lg"  required>
+																</div>
+																<div class="form-outline mb-4">
+																	<label class="form-label" for="form3Example3cg">Road Name,Area,Colony:</label>
+																	<input name='road_name' value="" type="text" id="form3Example3cg"
+																		class="form-control form-control-lg"  required>
+																</div>
+																<div class="form-outline mb-4">
+																	<label class="form-label" for="form3Example3cg">Pincode:</label>
+																	<input name='pincode' value="" type="text" id="form3Example3cg"
+																		class="form-control form-control-lg"  required>
+																</div>
+																<div class="form-outline mb-4">
+																	<label class="form-label" for="form3Example3cg">State:</label>
+																	<input name='state' value="" type="text" id="form3Example3cg"
+																		class="form-control form-control-lg"  required>
+																</div>
+																<div class="form-outline mb-4">
+																	<label class="form-label" for="form3Example3cg">City:</label>
+																	<input name='city' value="" type="text" id="form3Example3cg"
+																		class="form-control form-control-lg"  required>
+																</div>
+																<div class="form-outline mb-4">
+																	<label class="form-label" for="form3Example3cg">Phone Number:</label>
+																	<input name='phone_number' value="" type="text" id="form3Example3cg"
+																		class="form-control form-control-lg" required>
+																</div>
+																<div class="form-outline mb-4">
+																	<label class="form-label" for="form3Example3cg"> Alternate Phone Number:</label>
+																	<input name='alternate_number' value="" type="text" id="form3Example3cg"
+																		class="form-control form-control-lg" required>
+																</div>
+																<div class="d-flex justify-content-center">
+																	<button type="submit" class="btn btn-danger btn-lg gradient-custom-4 w-50 text-light"
+																		type="submit">Save </button>
+																</div>
+															</form>
+														</div>        
+													</div>
+												</div>
+											</div>
+											
+										</div>
+									</div>
+									<br>
+							   
+								</div>
+						    </div>
+						  </div>
+						<div style="padding-top:25px;">
+							<div style="float:left;">
+								{% comment %} <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addaddress">
+									Add address
+								</button> {% endcomment %}
+								<div class="modal fade" id="addaddress" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+									<div class="modal-dialog">
+										<div class="modal-content">
+											<div class="modal-header">
+												<h1 class="modal-title fs-5" id="exampleModalLabel">Add Address:</h1>
+												<br>
+												<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+													<span aria-hidden="true">&times;</span>
+												</button>
+											</div>
+											<div class="modal-body">
+												<form action="{% url 'add_address' %}"  method="POST">
+													{% csrf_token %}
+													<div style="width: 100px;" class="">
+													</div>
+													<div class="form-outline mb-4">
+														<label class="form-label" for="form3Example3cg"> First Name</label>
+														<input name='first_name' value="" type="text" id="form3Example3cg"
+															class="form-control form-control-lg" />
+													</div>
+													<div class="form-outline mb-4">
+														<label class="form-label" for="form3Example3cg">Last Name</label>
+														<input name='last_name' value="" type="text" id="form3Example3cg"
+															class="form-control form-control-lg"   required>
+													</div>
+													<div class="form-outline mb-4">
+														<label class="form-label" for="form3Example3cg">House Name/House No:</label>
+														<input name='house_name' value="" type="text" id="form3Example3cg"
+															class="form-control form-control-lg"  required>
+													</div>
+													<div class="form-outline mb-4">
+														<label class="form-label" for="form3Example3cg">Road Name,Area,Colony:</label>
+														<input name='road_name' value="" type="text" id="form3Example3cg"
+															class="form-control form-control-lg"  required>
+													</div>
+													<div class="form-outline mb-4">
+														<label class="form-label" for="form3Example3cg">Pincode:</label>
+														<input name='pincode' value="" type="text" id="form3Example3cg"
+															class="form-control form-control-lg"  required>
+													</div>
+													<div class="form-outline mb-4">
+														<label class="form-label" for="form3Example3cg">State:</label>
+														<input name='state' value="" type="text" id="form3Example3cg"
+															class="form-control form-control-lg"  required>
+													</div>
+													<div class="form-outline mb-4">
+														<label class="form-label" for="form3Example3cg">City:</label>
+														<input name='city' value="" type="text" id="form3Example3cg"
+															class="form-control form-control-lg"  required>
+													</div>
+													<div class="form-outline mb-4">
+														<label class="form-label" for="form3Example3cg">Phone Number:</label>
+														<input name='phone_number' value="" type="text" id="form3Example3cg"
+															class="form-control form-control-lg" required>
+													</div>
+													<div class="form-outline mb-4">
+														<label class="form-label" for="form3Example3cg"> Alternate Phone Number:</label>
+														<input name='alternate_number' value="" type="text" id="form3Example3cg"
+															class="form-control form-control-lg" required>
+													</div>
+													<div class="d-flex justify-content-center">
+														<button type="submit" class="btn btn-danger btn-lg gradient-custom-4 w-50 text-light"
+															type="submit">Save </button>
+													</div>
+												</form>
+											</div>        
+										</div>
+									</div>
+								</div>
+								
+							</div>
+						</div>
+						  
+						  <div class="card single-accordion">
+						    <div class="card-header" id="headingThree">
+						      <h5 class="mb-0">
+						        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+						          Payment Details
+						        </button>
+						      </h5>
+						    </div>
+						    <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+						      <div class="card-body">
+						        <div class="card-details">
+									<a id="checkoutLink" type="button" class="boxed-btn" style="text-decoration:none;" href="{% url 'Cash_On_Delivery' %}">Cash On Delivery</a><br><br>
+									<button id="rzp-button1" class="boxed-btn" style="background-color: #007bff; color: #fff; border: none; padding: 10px 20px; cursor: pointer; font-size: 16px;border-radius: 20px;" > Razor Pay</button>
+
+								</div>
+								 
+								
+						      </div>
+						    </div>
+						  </div>
+						</div>
+
+					</div>
+				</div>
+				
+				
+				<div class="col-lg-4">
+					<div class="order-details-wrap">
+						<table class="order-details">
+							<thead>
+								<tr>
+									<th>Your order Details</th>
+									<th>Price</th>
+								</tr>
+							</thead>
+							<tbody class="order-details-body">
+								<tr>
+									<td>Product</td>
+									<td>Total</td>
+								</tr>
+								<tr>
+									{% for cart_item in cart_items %}
+									<td>{{cart_item.product.product_name}}</td>
+									<td>{{cart_item.sub_total}}</td>
+								</tr>
+								{% endfor %}
+							</tbody>
+							<tbody class="checkout-details">
+								<tr>
+									<td>Subtotal</td>
+									<td>${{total}}</td>
+								</tr>
+								{% if cart.coupon %}
+								<tr>
+									<td>Coupon</td>
+									<td style="color:red;">- {{cart.coupon.couon_price}}</td>
+								</tr>
+								{% endif %}
+								{% if offer %}
+								<tr>
+									<td>Discount</td>
+									<td style="color:red;">- {{offer}}</td>
+								</tr>
+								{% endif %}
+								<tr>
+									<td>Shipping</td>
+									<td style="color:green;">Free</td>
+								</tr>
+								<tr>
+									<td>Total</td>
+									<td>${{order.order_total}}</td>
+								</tr>
+							</tbody>
+						</table>
+					
+						
+						<p id="selectionMessage" style="color: red; display: none;">Please select an address and payment method.</p>
+
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- end check out section -->
+
+
+	
+	<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+	<script>
+		var address_Id
+		function updateLinkUrl(addressId) {
+			console.log(addressId)
+			address_Id = addressId;
+			var link = document.getElementById("checkoutLink");
+			var url = "{% url 'Cash_On_Delivery'  %}?selected_address=" + addressId;
+			link.href = url;
+		}
+
+
+		function getCSRFToken() {
+			const cookies = document.cookie.split(';');
+			for (let i = 0; i < cookies.length; i++) {
+				const cookie = cookies[i].trim();
+				if (cookie.startsWith('csrftoken=')) {
+					return cookie.substring('csrftoken='.length, cookie.length);
+				}
+			}
+			return null;
+		}
+
+
+var csrfToken = getCSRFToken();
+		var url = "{% url 'payment' %}";
+		var OrdID = "{{order.order_number}}";
+		var redirct_url = "{% url 'order_detail' %}";
+		var options = {
+			"key": "rzp_test_Ub5KtRMuuB5ggC", // Enter the Key ID generated from the Dashboard
+			"amount": "{{order.order_total}}" * 100, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+			"currency": "INR",
+			"name": "Ecomme", //your business name
+			"description": "Test Transaction",
+			"image": "https://example.com/your_logo",
+			"order_id": "{{payment.id}}", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+			"handler": function (response){
+				sendData(response);
+				console.log('sending')
+			},
+
+    "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information, especially their phone number
+        "name": "{{user.first_name}}", //your customer's name
+        "email": "{{user.email}}", 
+        "contact": "{{user.phone_number}}"  //Provide the customer's phone number for better conversion rates 
+    },
+    "notes": {
+        "address": "Razorpay Corporate Office"
+    },
+    "theme": {
+        "color": "#3399cc"
+    }
+};
+var rzp1 = new Razorpay(options);
+rzp1.on('payment.failed', function (response){
+        alert(response.error.code);
+        alert(response.error.description);
+        alert(response.error.source);
+        alert(response.error.step);
+        alert(response.error.reason);
+        alert(response.error.metadata.order_id);
+        alert(response.error.metadata.payment_id);
+});
+document.getElementById('rzp-button1').onclick = function(e){
+    rzp1.open();
+    e.preventDefault();
+}
+
+function sendData(response) {
+			fetch(url, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					"X-CSRFToken": csrfToken
+				},
+				body: JSON.stringify({
+					"PayID": response.razorpay_payment_id,
+					"OrdID": OrdID,
+					"address_Id": address_Id
+				})
+			})
+			.then((response) => response.json())
+			.then((data) => {
+				// Handle the server response if needed
+				console.log('response')
+				window.location.href = redirct_url +'?order_number='+data.order_number+'&payment_id='+data.transID;
+			})
+			.catch(error => {
+				console.error('Error sending data:', error);
+			});
+		}
+
+
+
+	</script>
+
+
+{% endblock %}

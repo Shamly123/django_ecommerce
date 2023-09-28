@@ -1,0 +1,91 @@
+{% extends 'admin-base.html' %}
+{% block title %}Order Details{% endblock %}
+
+{% block start %}
+<section class="content-main">
+    <div class="content-header"><br>
+        <h2>Order Details</h2>
+    </div>
+    <div class="card mb-4">
+        <header class="card-header">
+            <h3 class="fs-5">Order Information</h3>
+        </header>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <th>Order Number:</th>
+                        <td>{{ order.order_number }}</td>
+                    </tr>
+                    <tr>
+                        <th>User:</th>
+                        <td>{{ order.user }}</td>
+                    </tr>
+                    <tr>
+                        <th>Total Price:</th>
+                        <td>{{ order.order_total }}</td>
+                    </tr>
+                    <tr>
+                        <th>Coupon:</th>
+                        <td>{{ order.coupon_price }}</td>
+                    </tr>
+                    <tr>
+                        <th>Offer:</th>
+                        <td>{{ order.offer }}</td>
+                    </tr>
+                    <tr>
+                        <th>Payment Method:</th>
+                        <td>{{ order.method }}</td>
+                    </tr>
+                    <tr>
+                        <th>Status:</th>
+                        <td>{{ order.status }}</td>
+                    </tr>
+                    <tr>
+                        <th>Date Created:</th>
+                        <td>{{ order.created_at }}</td>
+                    </tr> 
+                    <tr>
+                        <th>Billing Address:</th>
+                        <td>{{ order.address.house_name }},{{order.address.street}},<br>
+                            {{order.address.city}},{{order.address.state}}-{{order.address.pincode}}<br>
+                            {{order.address.phone_number}}, {{order.address.alternate_number}}</td>
+                    </tr>
+                    <!-- Add more order details as needed -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card mb-4">
+        <header class="card-header">
+            <h3 class="fs-5">Ordered Items</h3>
+        </header>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order_items %}
+                    <tr>
+                        <td>
+                            <!-- Display product image here -->
+                            <img src="{{ item.product.product_images.first.image.url }}" alt="{{ item.product.product_name }}" width="50">
+                            {{ item.product.product_name }}
+                        </td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ item.product.price }}</td>
+                        <td>{{ item.total_price }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+{% endblock %}

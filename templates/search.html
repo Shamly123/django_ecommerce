@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block start %}
+	<!-- breadcrumb-section -->
+	<div class="breadcrumb-section breadcrumb-bg">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-8 offset-lg-2 text-center">
+					<div class="breadcrumb-text">
+						<p>See more Details</p>
+						<h4 style="color:#ffff;">You have Searched here for : <b>"{{query}}"</b></h4>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- end breadcrumb section -->
+<div>
+<div class="row product-lists">
+  {% for product in products %}
+  <div class="col-lg-4 col-md-6 text-center strawberry">
+    <div class="single-product-item">
+      <div class="product-image">
+        <a href="{% url 'get_products' product.slug %}"><img src="{{product.product_images.first.image.url}}" alt=""></a>
+      </div>
+      <h3>{{product.product_name}}</h3>
+      <p class="product-price"><span>Per Kg</span>{{product.price}}</p>
+      <a href="cart.html" class="cart-btn"><i class="fas fa-shopping-cart"></i> Buy Now</a>
+    </div>
+
+  </div>
+   {% empty %}
+        <div class="row mx-auto" style="padding-top:200px;">
+            <p class="text-center my_search_text" style="padding-left:700px;" > 0 results found </p>
+        </div>
+  {% endfor %}
+</div>
+</div>
+
+
+
+
+{% endblock %}
+
