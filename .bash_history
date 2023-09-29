@@ -159,3 +159,54 @@ sudo ufw delete allow 'Nginx HTTP'
 sudo ufw allow 'OpenSSH'
 sudo ufw status
 sudo certbot --nginx -d thefruitshack.online -d www.thefruitshack.online
+python manage.py loaddata data.jsonsudo certbot --nginx -d thefruitshack.online -d www.thefruitshack.online
+sudo certbot --nginx -d thefruitshack.online -d www.thefruitshack.online
+nano .env
+sudo systemctl restart nginx
+nano fruitshack/settings.py
+sudo systemctl restart nginx
+nano fruitshack/settings.py
+sudo systemctl restart nginx
+source venv/bin/activate
+python manage.py createsuperuser
+ls
+python manage.py makemigrations
+python manage.py migrate
+
+ls
+sudo nano .env
+sudo nano fruitshack/settings.py
+sudo systemctl restart gunicorn
+sudo systemctl daemon-reload
+sudo systemctl restart gunicorn
+sudo nginx -t && sudo systemctl restart nginx
+nano accounts/models.py
+python manage.py makemigrations
+python manage.py migrate
+sudo systemctl restart gunicorn
+sudo systemctl daemon-reload
+sudo systemctl restart gunicorn
+sudo nginx -t && sudo systemctl restart nginx
+pm2 stop all
+git pull origin main
+git push origin main
+git stash
+git pull origin main
+rm  accounts/migrations/0007_alter_address_alternate_number_and_more.py
+git pull origin main
+python manage.py migrate
+sudo systemctl restart gunicorn
+sudo systemctl daemon-reload
+sudo systemctl restart gunicorn
+sudo nginx -t && sudo systemctl restart nginx
+git stash drop
+sudo nano fruitshack/settings.py
+git push origin main
+git add .
+git commit -m "settings changed"
+git push origin main
+sudo systemctl restart gunicorn
+sudo systemctl daemon-reload
+sudo systemctl restart gunicorn
+sudo nginx -t && sudo systemctl restart nginx
+exit
