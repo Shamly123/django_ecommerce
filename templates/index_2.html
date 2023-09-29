@@ -2,7 +2,26 @@
 {% load static %}
 
 {% block start %}
-	
+<style>
+	/* Define the blinking animation */
+@keyframes blink {
+  0% {
+    color: #ff0000; /* Start color (red in this example) */
+  }
+  50% {
+    color: #ffffff; /* Middle color (white in this example) */
+  }
+  100% {
+    color: #ff0000; /* End color (red in this example) */
+  }
+}
+
+/* Apply the animation to the discount class */
+.discount {
+  animation: blink 1s infinite; /* Use 1s for 1 second duration, and set it to repeat indefinitely */
+}
+
+</style>
 	<!--PreLoader-->
     <div class="loader">
         <div class="loader-inner">
@@ -87,7 +106,7 @@
 					%			<h1>Delicious Seasonal Fruits</h1>
 								<div class="hero-btns">
 									<a href="{% url 'shopview' %}" class="boxed-btn" style="text-decoration:None;">Fruit Collection</a>
-									<a href="contact.html" class="bordered-btn" style="text-decoration:None;">Contact Us</a>
+									<a href="{% url "contact" %}" class="bordered-btn" style="text-decoration:None;">Contact Us</a>
 								</div>
 							</div>
 						</div>
@@ -106,7 +125,7 @@
 								<h1>100% Organic Collection</h1>
 								<div class="hero-btns">
 									<a href="{% url 'shopview' %}" class="boxed-btn" style="text-decoration:None;">Visit Shop</a>
-									<a href="contact.html" class="bordered-btn" style="text-decoration:None;">Contact Us</a>
+									<a href="{% url "contact" %}" class="bordered-btn" style="text-decoration:None;">Contact Us</a>
 								</div>
 							</div>
 						</div>
@@ -125,7 +144,7 @@
 								<h1>Get December Discount</h1>
 								<div class="hero-btns">
 									<a href="{% url 'shopview' %}" class="boxed-btn" style="text-decoration:None;">Visit Shop</a>
-									<a href="contact.html" class="bordered-btn" style="text-decoration:None;">Contact Us</a>
+									<a href="{% url "contact" %}" class="bordered-btn" style="text-decoration:None;">Contact Us</a>
 								</div>
 							</div>
 						</div>
@@ -202,10 +221,10 @@
 						<h3>{{product.product_name}}</h3>
 						<p class="product-price"><span>Per Kg</span>{{product.price}}</p>
 						{% if product.offer %}
-						<p>{{product.offer.percentage }}% off</p>
+						<p class="discount">{{product.offer.percentage }}% off</p>
 						{% endif %}
 						{% if product.category.offer %}
-						<p>{{product.category.offer.percentage }}% off for this category</p>
+						<p class="discount">{{product.category.offer.percentage }}% off for this category</p>
 						{% endif %}
 						<a href="{% url 'get_products' product.slug %}" class="cart-btn" style="text-decoration:None;"><i class="fas fa-shopping-cart"></i> Buy Now</a>
 <!--						<a href="wishlist.html" class="cart-btn"><i class="fa fa-heart" aria-hidden="true"></i>Add to Wishlist</a>-->
@@ -241,7 +260,7 @@
                     <div class="text">Quisquam minus maiores repudiandae nobis, minima saepe id, fugit ullam similique! Beatae, minima quisquam molestias facere ea. Perspiciatis unde omnis iste natus error sit voluptatem accusant</div>
                     <!--Countdown Timer-->
                     <div class="time-counter"><div class="time-countdown clearfix" data-countdown="2020/2/01"><div class="counter-column"><div class="inner"><span class="count">00</span>Days</div></div> <div class="counter-column"><div class="inner"><span class="count">00</span>Hours</div></div>  <div class="counter-column"><div class="inner"><span class="count">00</span>Mins</div></div>  <div class="counter-column"><div class="inner"><span class="count">00</span>Secs</div></div></div></div>
-                	<a href="cart.html" class="cart-btn mt-3" style="text-decoration:None;"><i class="fas fa-shopping-cart"></i> Buy Now</a>
+                	<a href="{% url "shopview" %}" class="cart-btn mt-3" style="text-decoration:None;"><i class="fas fa-shopping-cart"></i> Buy Now</a>
                 </div>
             </div>
         </div>

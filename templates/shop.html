@@ -2,7 +2,26 @@
 {% load static %}
 
 {% block start %}
+<style>
+	/* Define the blinking animation */
+@keyframes blink {
+  0% {
+    color: #ff0000; /* Start color (red in this example) */
+  }
+  50% {
+    color: #ffffff; /* Middle color (white in this example) */
+  }
+  100% {
+    color: #ff0000; /* End color (red in this example) */
+  }
+}
 
+/* Apply the animation to the discount class */
+.discount {
+  animation: blink 1s infinite; /* Use 1s for 1 second duration, and set it to repeat indefinitely */
+}
+
+</style>
 
 	<!-- breadcrumb-section -->
 	<div class="breadcrumb-section breadcrumb-bg">
@@ -56,10 +75,10 @@
 						<h3>{{pro.product_name}}</h3>
 						<p class="product-price"><span>Per Kg</span>{{pro.price}}</p>
 						{% if pro.offer %}
-						<p>{{pro.offer.percentage }}% off</p>
+						<p class="discount">{{pro.offer.percentage }}% off</p>
 						{% endif %}
 						{% if pro.category.offer %}
-						<p>{{pro.category.offer.percentage }}% off for this category</p>
+						<p class="discount">{{pro.category.offer.percentage }}% off for this category</p>
 						{% endif %}
 						<a href="{% url 'get_products' pro.slug %}" class="cart-btn" style="text-decoration:None;"><i class="fas fa-shopping-cart"></i> Buy Now</a>
 					</div>

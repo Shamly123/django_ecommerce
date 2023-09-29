@@ -227,8 +227,9 @@
 						    <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
 						      <div class="card-body">
 						        <div class="card-details">
-									<a id="checkoutLink" type="button" class="boxed-btn" style="text-decoration:none;" href="{% url 'Cash_On_Delivery' %}">Cash On Delivery</a><br><br>
-									<button id="rzp-button1" class="boxed-btn" style="background-color: #007bff; color: #fff; border: none; padding: 10px 20px; cursor: pointer; font-size: 16px;border-radius: 20px;" > Razor Pay</button>
+									<a id="checkoutLink" type="button" class="boxed-btn" style="text-decoration:none;" href="{% url 'Cash_On_Delivery' %}" data-address-selected="false">Cash On Delivery</a><br><br>
+								<button id="rzp-button1" class="boxed-btn" style="background-color: #007bff; color: #fff; border: none; padding: 10px 20px; cursor: pointer; font-size: 16px; border-radius: 20px;" data-address-selected="false">Razor Pay</button>
+
 
 								</div>
 								 
@@ -299,8 +300,8 @@
 		</div>
 	</div>
 	<!-- end check out section -->
-
-
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	
 	
 	<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
@@ -366,10 +367,10 @@ rzp1.on('payment.failed', function (response){
         alert(response.error.metadata.order_id);
         alert(response.error.metadata.payment_id);
 });
-document.getElementById('rzp-button1').onclick = function(e){
+{% comment %} document.getElementById('rzp-button1').onclick = function(e){
     rzp1.open();
     e.preventDefault();
-}
+} {% endcomment %}
 
 function sendData(response) {
 			fetch(url, {
@@ -395,9 +396,70 @@ function sendData(response) {
 			});
 		}
 
+		
 
 
 	</script>
+	<script>
+		$(document).ready(function () {
+		  // Function to check if at least one radio input is selected
+		  function checkRadioSelection() {
+			const radioInputs = $("input[type='radio']");
+			const submitButton = $("#place-order");
+			const selectAddressMessage = $("#select-address-message");
+			const checkoutLinkButton = $("#checkoutLink");
+			const rzpButton = $("#rzp-button1");
+		
+			if (radioInputs.is(":checked")) {
+			  submitButton.prop("disabled", false);
+			  selectAddressMessage.hide();
+			  // Enable the buttons when an address is selected
+			  checkoutLinkButton.attr("data-address-selected", "true");
+			  rzpButton.attr("data-address-selected", "true");
+			} else {
+			  submitButton.prop("disabled", true);
+			  selectAddressMessage.show();
+			  // Disable the buttons when no address is selected
+			  checkoutLinkButton.attr("data-address-selected", "false");
+			  rzpButton.attr("data-address-selected", "false");
+			}
+		  }
+		  
+		  // Call the function on page load and when radio inputs change
+		  checkRadioSelection();
+		  $("input[type='radio']").change(checkRadioSelection);
+		
+		  // Add click event listeners to the buttons
+		  $("#checkoutLink").click(function () {
+			const addressSelected = $(this).attr("data-address-selected");
+			if (addressSelected === "false") {
+			  alert("Please select an address before proceeding.");
+			  return false; // Prevent the button click action
+			}
+		  });
+		
+		  // Add click event handler for Razor Pay button
+		  $("#rzp-button1").click(function () {
+			const addressSelected = $(this).attr("data-address-selected");
+			if (addressSelected === "false") {
+			  alert("Please select an address before proceeding with Razor Pay.");
+			  return false; // Prevent the Razor Pay button click action
+			}
+			// If an address is selected, proceed with the payment logic here
+			// For example, open the Razor Pay payment gateway
+			// You can keep your existing Razor Pay code here
+			openRazorPayGateway();
+			rzp1.open();
+		  });
+		
+		  // Function to open Razor Pay gateway (replace this with your actual code)
+		  function openRazorPayGateway() {
+			// Your Razor Pay payment code goes here
+			// ...
+		  }
+		});
+		</script>
+		
 
 
 {% endblock %}

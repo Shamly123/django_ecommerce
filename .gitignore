@@ -1,3 +1,4 @@
 .env
 fruits
 db.sqlite3
+settings.py
