@@ -28,15 +28,16 @@ def _cart_id(request):
 
 @login_required
 def cart_details(request, total=0, counter=0, cart_items=None):
-    try:
-        cart = Cart.objects.get(cart_id=_cart_id(request))
-        cart_items = CartItem.objects.filter(cart=cart, active=True)
-        for cart_item in cart_items:
-            total += cart_item.product.price * cart_item.quantity
-            counter += cart_item.quantity
-            offer = cart_item.product.get_offer_price() * cart_item.quantity
-    except ObjectDoesNotExist:
-        pass
+    offer =0
+    cart,_ = Cart.objects.get_or_create(cart_id=_cart_id(request))
+    cart_items = CartItem.objects.filter(cart=cart, active=True)
+    available_coupons = Coupon.objects.filter(active=True)
+    
+    for cart_item in cart_items:
+        total += cart_item.product.price * cart_item.quantity
+        counter += cart_item.quantity
+        offer = cart_item.product.get_offer_price() * cart_item.quantity
+ 
 
     if request.method == "POST":
         coupon_code = request.POST.get("coupon_code")
@@ -72,6 +73,7 @@ def cart_details(request, total=0, counter=0, cart_items=None):
         "order_total": round(order_total, 2),
         "cart": cart,
         "offer": offer,
+        'available_coupons':available_coupons,
     }
 
     return render(request, "cart.html", context)
@@ -252,14 +254,6 @@ def Cash_On_Delivery(request):
     return redirect("order_detail")
 
 
-# # for proceed to button in order pending
-# def proceed_to_pay(request,order_id):
-#     order = Order.objects.get(uid=order_id)
-#     user = request.user
-#     address = Address.objects.filter(user = user)
-
-
-#     return (render(request,'checkout.html',dict(cart_items=order.order_item.all(),addresses=address,total=order.order_total, order=order,user=user)))
 
 
 @login_required

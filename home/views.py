@@ -6,7 +6,7 @@ from product.models import Product
 
 
 def index(request):
-    context = {"products": Product.objects.all()}
+    context = {"products": Product.objects.all()[:6]}
     return render(request, "index_2.html", context)
 
 
@@ -16,3 +16,5 @@ def about(request):
 
 def contact(request):
     return render(request, "contact.html")
+
+

@@ -11,6 +11,8 @@ class Coupon(BaseModel):
     coupon_code = models.CharField(max_length=50)
     couon_price = models.IntegerField()
     min_price = models.IntegerField()
+    active = models.BooleanField(default=True)
+    
 
 
 class Cart(models.Model):

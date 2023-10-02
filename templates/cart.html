@@ -68,6 +68,22 @@
                 <td><span data-id="{{ cart_item.id }}" class="item-total">{{cart_item.sub_total}}</span></td>
               </tr>
               {% endfor %}
+              <tr>
+                <td><h2>Available Coupons</h2></td>
+            </tr>
+            {% for coupon in available_coupons %}
+                <tr>
+                    <td>Coupon Code: <strong style="color:blue;">{{ coupon.coupon_code }}</strong></td>
+                    <td>Minimum Purchase: ₹{{ coupon.min_price }}</td>
+                    <!-- Add any other coupon information you want to display -->
+                </tr>
+            {% empty %}
+                <!-- Handle the case where no coupons are available -->
+                <tr>
+                    <td colspan="3">No coupons available</td>
+                </tr>
+            {% endfor %}
+            
             </tbody>
           </table>
         </div>
