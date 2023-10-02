@@ -28,6 +28,7 @@ def _cart_id(request):
 
 @login_required
 def cart_details(request, total=0, counter=0, cart_items=None):
+    offer = 0
     try:
         cart = Cart.objects.get(cart_id=_cart_id(request))
         cart_items = CartItem.objects.filter(cart=cart, active=True)

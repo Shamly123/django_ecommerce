@@ -210,3 +210,15 @@ sudo systemctl daemon-reload
 sudo systemctl restart gunicorn
 sudo nginx -t && sudo systemctl restart nginx
 exit
+nano cart/view.py
+ls
+nano cart/views.py
+sudo systemctl restart gunicorn
+sudo systemctl restart nginx
+git push origin main
+git add .
+git commit -m "change database"
+git push origin main
+git pull origin main
+sudo systemctl restart nginx
+sudo systemctl restart gunicorn
